@@ -1006,183 +1006,75 @@ function SocialBadges({ onSelect }) {
 }
 
 
-// ── Welcome Sign — rounded stone nameplate like reference ─────────────────
+// ── Welcome Sign — stone nameplate with real text ─────────────────────────
 function WelcomeSign({ onSelect }) {
   return (
     <group
-      position={[-0.4, 0.32, 1.72]}
-      rotation={[-0.15, -0.18, 0]}
+      position={[-0.4, 0.42, 1.72]}
+      rotation={[-0.12, -0.18, 0]}
       onClick={(e) => { e.stopPropagation(); onSelect('about') }}
     >
-      {/* Main body — thick rounded slab */}
+      {/* Main slab body */}
       <mesh castShadow receiveShadow>
-        <boxGeometry args={[0.90, 0.30, 0.18]} />
+        <boxGeometry args={[0.88, 0.28, 0.16]} />
         <meshStandardMaterial color={C.accent} roughness={0.82} />
       </mesh>
 
-      {/* Left round cap */}
-      <mesh position={[-0.45, 0, 0]} castShadow>
-        <sphereGeometry args={[0.150, 10, 8]} />
+      {/* Left round end cap */}
+      <mesh position={[-0.44, 0, 0]} castShadow>
+        <sphereGeometry args={[0.14, 12, 10]} />
         <meshStandardMaterial color={C.accent} roughness={0.82} />
       </mesh>
 
-      {/* Right round cap */}
-      <mesh position={[0.45, 0, 0]} castShadow>
-        <sphereGeometry args={[0.150, 10, 8]} />
+      {/* Right round end cap */}
+      <mesh position={[0.44, 0, 0]} castShadow>
+        <sphereGeometry args={[0.14, 12, 10]} />
         <meshStandardMaterial color={C.accent} roughness={0.82} />
       </mesh>
 
-      {/* Top edge rounding */}
-      <mesh position={[0, 0.15, 0]} castShadow>
-        <cylinderGeometry args={[0.150, 0.150, 0.90, 10, 1, false, 0, Math.PI]} />
+      {/* Top edge pill rounding */}
+      <mesh position={[0, 0.14, 0]} rotation={[0, Math.PI/2, 0]} castShadow>
+        <cylinderGeometry args={[0.14, 0.14, 0.88, 12, 1, false, 0, Math.PI]} />
         <meshStandardMaterial color={C.accent} roughness={0.82} />
       </mesh>
 
-      {/* Bottom edge rounding */}
-      <mesh position={[0, -0.15, 0]} rotation={[Math.PI, 0, 0]} castShadow>
-        <cylinderGeometry args={[0.150, 0.150, 0.90, 10, 1, false, 0, Math.PI]} />
+      {/* Bottom edge pill rounding */}
+      <mesh position={[0, -0.14, 0]} rotation={[Math.PI, Math.PI/2, 0]} castShadow>
+        <cylinderGeometry args={[0.14, 0.14, 0.88, 12, 1, false, 0, Math.PI]} />
         <meshStandardMaterial color={C.accent} roughness={0.82} />
       </mesh>
 
-      {/* Front face — slightly inset darker panel for text area */}
-      <mesh position={[0, 0, 0.092]}>
-        <boxGeometry args={[0.82, 0.22, 0.004]} />
-        <meshStandardMaterial color={C.islandTop} roughness={0.78} />
+      {/* Inset face panel */}
+      <mesh position={[0, 0, 0.082]}>
+        <boxGeometry args={[0.80, 0.20, 0.003]} />
+        <meshStandardMaterial color={C.islandTop} roughness={0.75} />
       </mesh>
 
-      {/* "Welcome" — dark carved text lines on front face */}
-      {/* W shape */}
-      <mesh position={[-0.30, 0.01, 0.096]}>
-        <boxGeometry args={[0.022, 0.13, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.27, -0.03, 0.096]} rotation={[0,0,0.3]}>
-        <boxGeometry args={[0.010, 0.07, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.245, 0.01, 0.096]}>
-        <boxGeometry args={[0.010, 0.10, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.22, -0.03, 0.096]} rotation={[0,0,-0.3]}>
-        <boxGeometry args={[0.010, 0.07, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.19, 0.01, 0.096]}>
-        <boxGeometry args={[0.022, 0.13, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
+      {/* ── Actual "Welcome" text ── */}
+      <Text
+        position={[0, 0, 0.092]}
+        fontSize={0.11}
+        color={C.woodDk}
+        anchorX="center"
+        anchorY="middle"
+        font="https://fonts.gstatic.com/s/satisfy/v21/rP2Hp2yn6lkG50LoCZOIHQ.woff"
+        maxWidth={0.75}
+      >
+        Welcome
+      </Text>
 
-      {/* e */}
-      <mesh position={[-0.14, 0.01, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.118, 0.025, 0.096]}>
-        <boxGeometry args={[0.012, 0.038, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.118, -0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.038, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.14, 0.038, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.14, -0.022, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* l */}
-      <mesh position={[-0.075, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.13, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* c */}
-      <mesh position={[-0.03, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.09, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.01, 0.038, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-0.01, -0.022, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* o */}
-      <mesh position={[0.055, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.09, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.098, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.09, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.076, 0.038, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.076, -0.022, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* m */}
-      <mesh position={[0.14, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.09, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.163, 0.025, 0.096]}>
-        <boxGeometry args={[0.012, 0.06, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.186, 0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.09, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.152, 0.038, 0.096]}>
-        <boxGeometry args={[0.06, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* e (last) */}
-      <mesh position={[0.235, 0.01, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.257, 0.025, 0.096]}>
-        <boxGeometry args={[0.012, 0.038, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.257, -0.01, 0.096]}>
-        <boxGeometry args={[0.012, 0.038, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.235, 0.038, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.235, -0.022, 0.096]}>
-        <boxGeometry args={[0.048, 0.012, 0.003]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* Bottom small feet/base so it sits on ground */}
-      {[-0.28, 0.28].map((x, i) => (
-        <mesh key={i} position={[x, -0.19, 0]} castShadow>
-          <boxGeometry args={[0.12, 0.06, 0.16]} />
+      {/* Two small base feet */}
+      {[-0.26, 0.26].map((x, i) => (
+        <mesh key={i} position={[x, -0.20, 0]} castShadow>
+          <boxGeometry args={[0.10, 0.055, 0.14]} />
           <meshStandardMaterial color={C.wallDk} roughness={0.85} />
         </mesh>
       ))}
     </group>
   )
 }
+
+
 
 // ── Skills Easel ───────────────────────────────────────────────────────────
 function ProjectCanvas({ onSelect }) {
