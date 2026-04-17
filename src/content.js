@@ -41,8 +41,8 @@ export const PROJECTS = [
 
 export const SOCIALS = [
   { label: 'GitHub',   icon: 'gh',  url: 'https://github.com/sudovivek' },
-  { label: 'LinkedIn', icon: 'li',  url: 'https://linkedin.com/in/sudovivek' },
-  { label: 'Email',    icon: 'em',  url: 'mailto:vivek@example.com' },
+  { label: 'LinkedIn', icon: 'li',  url: 'https://in.linkedin.com/in/sudovivek' },
+  { label: 'Email',    icon: 'em',  url: 'mailto:vivekchoudhary.me@gmail.com' },
 ]
 
 export const ABOUT = `Security Engineer focused on offensive security, penetration testing, and vulnerability research. I break things to understand how they work — then help teams build them stronger.`
