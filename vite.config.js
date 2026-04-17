@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// For a user/org site (vivekchoudary.github.io) the base is '/'
+// For a user/org site (sudovivek.github.io) the base is '/'
 // For a project site (username.github.io/repo-name) change base to '/repo-name/'
 export default defineConfig({
   plugins: [react()],
