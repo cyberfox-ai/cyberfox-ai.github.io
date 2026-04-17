@@ -1005,31 +1005,65 @@ function SocialBadges({ onSelect }) {
   )
 }
 
-// ── Welcome Sign ───────────────────────────────────────────────────────────
+// ── Welcome Sign — flat stone slab lying tilted on ground ─────────────────
 function WelcomeSign({ onSelect }) {
   return (
-    <group position={[-0.4, 0.32, 1.72]} rotation={[0, -0.18, 0]} onClick={(e) => { e.stopPropagation(); onSelect('about') }}>
-      <mesh castShadow>
-        <boxGeometry args={[1.1, 0.32, 0.072]} />
-        <meshStandardMaterial color={C.wood} roughness={0.75} />
+    <group
+      position={[-0.4, 0.30, 1.72]}
+      rotation={[0.52, -0.22, -0.38]}
+      onClick={(e) => { e.stopPropagation(); onSelect('about') }}
+    >
+      {/* Main stone slab — chunky rounded box */}
+      <mesh castShadow receiveShadow>
+        <boxGeometry args={[0.72, 0.14, 0.38]} />
+        <meshStandardMaterial color={C.accent} roughness={0.85} />
       </mesh>
-      <mesh position={[0, 0, 0.038]}>
-        <boxGeometry args={[1.02, 0.23, 0.01]} />
-        <meshStandardMaterial color={C.keyDk} roughness={0.3} />
+
+      {/* Slightly rounded feel — thin face plate */}
+      <mesh position={[0, 0.072, 0]}>
+        <boxGeometry args={[0.68, 0.008, 0.34]} />
+        <meshStandardMaterial color={C.islandTop} roughness={0.8} />
       </mesh>
-      {[0.06, 0.0, -0.06].map((dy, i) => (
-        <mesh key={i} position={[0, dy, 0.048]}>
-          <boxGeometry args={[0.74 - i*0.06, 0.022, 0.005]} />
-          <meshStandardMaterial color={C.termGrn} emissive={C.termGrn} emissiveIntensity={1.8} roughness={0.1} />
+
+      {/* Corner rounding blobs to give stone feel */}
+      {[[-0.34, 0, -0.18], [0.34, 0, -0.18], [-0.34, 0, 0.18], [0.34, 0, 0.18]].map(([x,y,z], i) => (
+        <mesh key={i} position={[x, y, z]} castShadow>
+          <sphereGeometry args={[0.072, 7, 6]} />
+          <meshStandardMaterial color={C.accent} roughness={0.85} />
         </mesh>
       ))}
-      {[-0.42, 0.42].map((x, i) => (
-        <mesh key={i} position={[x, -0.26, 0]}>
-          <boxGeometry args={[0.065, 0.25, 0.065]} />
-          <meshStandardMaterial color={C.woodDk} roughness={0.8} />
-        </mesh>
-      ))}
-      <pointLight position={[0, 0.1, 0.35]} intensity={0.5} color={C.termGrn} distance={1.2} decay={2} />
+
+      {/* "Welcome" text lines — carved look using dark raised bars */}
+      {/* W */}
+      <mesh position={[-0.22, 0.078, 0.01]}>
+        <boxGeometry args={[0.048, 0.006, 0.115]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
+      </mesh>
+      <mesh position={[-0.18, 0.078, 0.04]} rotation={[0, 0.38, 0]}>
+        <boxGeometry args={[0.008, 0.006, 0.07]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
+      </mesh>
+      <mesh position={[-0.14, 0.078, 0.01]} rotation={[0, -0.38, 0]}>
+        <boxGeometry args={[0.008, 0.006, 0.07]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
+      </mesh>
+
+      {/* Text representation — three lines of "ink" like carved stone */}
+      <mesh position={[0.02, 0.078, -0.02]}>
+        <boxGeometry args={[0.48, 0.007, 0.028]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
+      </mesh>
+      <mesh position={[0.02, 0.078, 0.01]}>
+        <boxGeometry args={[0.44, 0.007, 0.028]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
+      </mesh>
+      <mesh position={[0.02, 0.078, 0.04]}>
+        <boxGeometry args={[0.38, 0.007, 0.028]} />
+        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
+      </mesh>
+
+      {/* Subtle glow */}
+      <pointLight position={[0, 0.3, 0]} intensity={0.3} color="#ffe8c0" distance={1.0} decay={2} />
     </group>
   )
 }
