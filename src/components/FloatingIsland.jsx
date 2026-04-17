@@ -1240,7 +1240,7 @@ function FloatingIslandScene({ onSelect }) {
       <DeskSetup onSelect={onSelect} />
       {/* Chair REMOVED as requested */}
       <Tree position={[2.0, 0.28, -1.3]} />
-      <Tree position={[-1.5, 0.28, -1.9]} />
+      {/* <Tree position={[-1.5, 0.28, -1.9]} /> */}
       <Lantern position={[-1.7, 0.28, -0.5]} />
       <Campfire position={[0.0, 0.28, 0.95]} />
       <Mailbox onSelect={onSelect} />
