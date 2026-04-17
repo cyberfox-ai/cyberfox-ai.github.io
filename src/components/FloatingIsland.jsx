@@ -424,58 +424,6 @@ function DeskSetup({ onSelect }) {
  
       {/* ── Monitors ── */}
  
-      {/* LEFT: Small angled screen (laptop/tablet style — shows terminal) */}
-      <group position={[-0.52, 0.72, -0.3]} rotation={[0, 0.32, 0]}>
-        {/* Screen body */}
-        <mesh castShadow>
-          <boxGeometry args={[0.52, 0.4, 0.06]} />
-          <meshStandardMaterial color="#d4d0c4" roughness={0.6} />
-        </mesh>
-        {/* Screen face */}
-        <mesh position={[0, 0, 0.032]}>
-          <boxGeometry args={[0.48, 0.36, 0.008]} />
-          <meshStandardMaterial color="#0a0f0a" roughness={0.05} />
-        </mesh>
-        {/* Green terminal content */}
-        <mesh position={[0, 0, 0.038]}>
-          <boxGeometry args={[0.44, 0.32, 0.002]} />
-          <meshStandardMaterial color="#001800" roughness={0.1} />
-        </mesh>
-        {/* Terminal window chrome bar */}
-        <mesh position={[0, 0.12, 0.04]}>
-          <boxGeometry args={[0.44, 0.04, 0.002]} />
-          <meshStandardMaterial color="#2a2a2a" roughness={0.3} />
-        </mesh>
-        {/* Window dots red/yellow/green */}
-        {['#ff5f57','#ffbd2e','#28c840'].map((col, i) => (
-          <mesh key={i} position={[-0.16 + i*0.03, 0.12, 0.042]}>
-            <sphereGeometry args={[0.008, 6, 6]} />
-            <meshStandardMaterial color={col} emissive={col} emissiveIntensity={0.8} roughness={0.2} />
-          </mesh>
-        ))}
-        {/* Green terminal text lines */}
-        {[0.06, 0.02, -0.02, -0.06, -0.1].map((y, i) => (
-          <mesh key={i} position={[-0.04 + (i%2)*0.02, y, 0.041]}>
-            <boxGeometry args={[0.26 - (i%3)*0.04, 0.013, 0.001]} />
-            <meshStandardMaterial color="#39ff14" emissive="#39ff14" emissiveIntensity={1.8} roughness={0.1} />
-          </mesh>
-        ))}
-        {/* Triangle/play icon */}
-        <mesh position={[-0.08, -0.02, 0.041]} rotation={[0, 0, -Math.PI/2]}>
-          <coneGeometry args={[0.022, 0.04, 3]} />
-          <meshStandardMaterial color="#ff3333" emissive="#ff3333" emissiveIntensity={1.5} roughness={0.1} />
-        </mesh>
-        {/* Screen stand */}
-        <mesh position={[0, -0.24, -0.02]}>
-          <boxGeometry args={[0.06, 0.1, 0.06]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, -0.3, -0.02]}>
-          <boxGeometry args={[0.2, 0.03, 0.14]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
-        </mesh>
-        <pointLight position={[0, 0, 0.2]} intensity={0.35} color="#39ff14" distance={1.0} decay={2} />
-      </group>
  
       {/* CENTER-BACK: Big CRT monitor (Kali Linux / code) */}
       <group position={[0.08, 1.08, -0.44]}>
@@ -520,53 +468,6 @@ function DeskSetup({ onSelect }) {
             </group>
           }
         />
-      </group>
- 
-      {/* RIGHT: Flat modern monitor (orange/code style) */}
-      <group position={[0.7, 0.95, -0.41]}>
-        {/* Thin flat panel bezel */}
-        <mesh castShadow>
-          <boxGeometry args={[0.62, 0.46, 0.06]} />
-          <meshStandardMaterial color="#d4d0c4" roughness={0.55} />
-        </mesh>
-        <mesh position={[0, 0, 0.032]}>
-          <boxGeometry args={[0.58, 0.42, 0.008]} />
-          <meshStandardMaterial color="#0a0a12" roughness={0.05} />
-        </mesh>
-        {/* Orange warm content */}
-        <mesh position={[0, 0, 0.038]}>
-          <boxGeometry args={[0.54, 0.38, 0.002]} />
-          <meshStandardMaterial color="#1a0e00" roughness={0.1} />
-        </mesh>
-        {/* Colorful UI bars (like reference image shows colored horizontal bars) */}
-        {[
-          { y: 0.1,  w: 0.36, col: '#ff8c00' },
-          { y: 0.05, w: 0.28, col: '#ffcc00' },
-          { y: 0.0,  w: 0.42, col: '#ff6600' },
-          { y:-0.05, w: 0.2,  col: '#ff8c00' },
-        ].map((bar, i) => (
-          <mesh key={i} position={[-0.04, bar.y, 0.04]}>
-            <boxGeometry args={[bar.w, 0.022, 0.001]} />
-            <meshStandardMaterial color={bar.col} emissive={bar.col} emissiveIntensity={1.4} roughness={0.1} />
-          </mesh>
-        ))}
-        {/* Window dots */}
-        {['#ff5f57','#ffbd2e','#28c840'].map((col, i) => (
-          <mesh key={i} position={[-0.2 + i*0.03, 0.16, 0.042]}>
-            <sphereGeometry args={[0.007, 6, 6]} />
-            <meshStandardMaterial color={col} emissive={col} emissiveIntensity={0.9} roughness={0.2} />
-          </mesh>
-        ))}
-        {/* Stand neck */}
-        <mesh position={[0, -0.27, 0]}>
-          <boxGeometry args={[0.06, 0.1, 0.06]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, -0.34, 0]}>
-          <boxGeometry args={[0.22, 0.03, 0.14]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
-        </mesh>
-        <pointLight position={[0, 0, 0.22]} intensity={0.4} color="#ff8800" distance={1.2} decay={2} />
       </group>
  
       {/* ── Keyboard & Mouse ── */}
