@@ -119,21 +119,6 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </mesh>
 
-      {/* ── Flat roof slab ── (same blue-grey like reference) */}
-      <mesh position={[0, 2.04, -0.06]} castShadow>
-        <boxGeometry args={[2.72, 0.1, 2.02]} />
-        <meshStandardMaterial color={C.roof} roughness={0.55} />
-      </mesh>
-      {/* Roof front edge strip — visible from front */}
-      <mesh position={[0, 2.0, 1.0]}>
-        <boxGeometry args={[2.72, 0.08, 0.06]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.55} />
-      </mesh>
-      {/* Roof right open edge strip */}
-      <mesh position={[1.3, 2.0, -0.06]}>
-        <boxGeometry args={[0.06, 0.08, 2.0]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.55} />
-      </mesh>
 
       {/* ── Window on LEFT wall ── (matches reference exactly) */}
       {/* Window frame */}
