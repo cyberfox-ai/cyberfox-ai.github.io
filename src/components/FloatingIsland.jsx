@@ -65,103 +65,180 @@ function Island() {
   )
 }
 
-// ── Open-roof house (like reference: 3 walls + open front) ─────────────────
+// ── 2-wall open room (back + left only, open front + right) ───────────────
 function House() {
   return (
     <group position={[0.1, 0.27, -0.5]}>
-      {/* Floor */}
-      <mesh position={[0, 0.04, 0]} receiveShadow>
-        <boxGeometry args={[2.5, 0.08, 1.9]} />
-        <meshStandardMaterial color={C.accent} roughness={0.75} />
-      </mesh>
 
-      {/* Back wall */}
-      <mesh position={[0, 0.95, -0.9]} castShadow>
-        <boxGeometry args={[2.5, 1.9, 0.1]} />
-        <meshStandardMaterial color={C.wall} roughness={0.7} />
+      {/* ── Wooden plank floor ── */}
+      {/* Base slab */}
+      <mesh position={[0, 0.02, 0]} receiveShadow>
+        <boxGeometry args={[2.6, 0.06, 2.0]} />
+        <meshStandardMaterial color="#d8d4cc" roughness={0.8} />
       </mesh>
-
-      {/* Left wall */}
-      <mesh position={[-1.2, 0.95, -0.05]} castShadow>
-        <boxGeometry args={[0.1, 1.9, 1.8]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.7} />
-      </mesh>
-
-      {/* Right wall */}
-      <mesh position={[1.2, 0.95, -0.05]} castShadow>
-        <boxGeometry args={[0.1, 1.9, 1.8]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.7} />
-      </mesh>
-
-      {/* Ceiling / roof base plate */}
-      <mesh position={[0, 1.92, -0.05]} castShadow>
-        <boxGeometry args={[2.5, 0.1, 1.9]} />
-        <meshStandardMaterial color={C.roof} roughness={0.6} />
-      </mesh>
-
-      {/* Roof overhang front */}
-      <mesh position={[0, 1.93, 0.98]}>
-        <boxGeometry args={[2.6, 0.08, 0.28]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.6} />
-      </mesh>
-      {/* Roof overhang back */}
-      <mesh position={[0, 1.93, -1.0]}>
-        <boxGeometry args={[2.6, 0.08, 0.2]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.6} />
-      </mesh>
-      {/* Roof side overhangs */}
-      <mesh position={[-1.28, 1.93, -0.05]}>
-        <boxGeometry args={[0.18, 0.08, 2.1]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.6} />
-      </mesh>
-      <mesh position={[1.28, 1.93, -0.05]}>
-        <boxGeometry args={[0.18, 0.08, 2.1]} />
-        <meshStandardMaterial color={C.roofDk} roughness={0.6} />
-      </mesh>
-
-      {/* Back wall window left */}
-      <mesh position={[-0.68, 1.1, -0.85]}>
-        <boxGeometry args={[0.52, 0.48, 0.06]} />
-        <meshStandardMaterial color="#c8e0f8" roughness={0.1} transparent opacity={0.85} />
-      </mesh>
-      <mesh position={[-0.68, 1.1, -0.82]}>
-        <boxGeometry args={[0.015, 0.48, 0.01]} />
-        <meshStandardMaterial color={C.wall} />
-      </mesh>
-      <mesh position={[-0.68, 1.1, -0.82]}>
-        <boxGeometry args={[0.52, 0.015, 0.01]} />
-        <meshStandardMaterial color={C.wall} />
-      </mesh>
-      {/* Window sill */}
-      <mesh position={[-0.68, 0.84, -0.88]}>
-        <boxGeometry args={[0.6, 0.05, 0.12]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
-
-      {/* Right shelf on back wall */}
-      <mesh position={[0.72, 1.55, -0.84]}>
-        <boxGeometry args={[0.88, 0.055, 0.2]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
-      {/* Radio on shelf */}
-      <mesh position={[0.72, 1.65, -0.76]}>
-        <boxGeometry args={[0.26, 0.15, 0.18]} />
-        <meshStandardMaterial color={C.wall} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.72, 1.66, -0.68]}>
-        <cylinderGeometry args={[0.05, 0.05, 0.02, 14]} />
-        <meshStandardMaterial color={C.socDk} roughness={0.4} />
-      </mesh>
-      {/* Books */}
-      {[0.3, 0.38, 0.46].map((x, i) => (
-        <mesh key={i} position={[x, 1.66, -0.8]}>
-          <boxGeometry args={[0.055, 0.2, 0.14]} />
-          <meshStandardMaterial color={[C.socDk, C.wall, C.wallDk][i]} roughness={0.6} />
+      {/* Floor planks — horizontal strips */}
+      {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98].map((z, i) => (
+        <mesh key={i} position={[0, 0.054, z - 0.1]} receiveShadow>
+          <boxGeometry args={[2.58, 0.012, 0.3]} />
+          <meshStandardMaterial color={i % 2 === 0 ? '#d4d0c8' : '#ccc8c0'} roughness={0.75} />
+        </mesh>
+      ))}
+      {/* Plank gap lines */}
+      {[-0.82, -0.46, -0.1, 0.26, 0.62].map((z, i) => (
+        <mesh key={i} position={[0, 0.061, z + 0.15]}>
+          <boxGeometry args={[2.58, 0.004, 0.008]} />
+          <meshStandardMaterial color="#b8b4ac" roughness={0.9} />
         </mesh>
       ))}
 
-      {/* Interior warm light */}
-      <pointLight position={[0, 1.2, -0.1]} intensity={2.0} color="#ffe8c0" distance={3.5} decay={2} />
+      {/* ── Back wall ── */}
+      <mesh position={[0, 1.0, -0.96]} castShadow>
+        <boxGeometry args={[2.62, 2.0, 0.1]} />
+        <meshStandardMaterial color={C.wall} roughness={0.65} />
+      </mesh>
+      {/* Back wall inner face (slightly different shade) */}
+      <mesh position={[0, 1.0, -0.91]}>
+        <boxGeometry args={[2.6, 1.98, 0.01]} />
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </mesh>
+
+      {/* ── Left wall ── */}
+      <mesh position={[-1.25, 1.0, -0.06]} castShadow>
+        <boxGeometry args={[0.1, 2.0, 1.9]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.65} />
+      </mesh>
+      {/* Left wall inner face */}
+      <mesh position={[-1.2, 1.0, -0.06]}>
+        <boxGeometry args={[0.01, 1.98, 1.88]} />
+        <meshStandardMaterial color={C.wall} roughness={0.6} />
+      </mesh>
+
+      {/* ── Corner column where back meets left ── */}
+      <mesh position={[-1.25, 1.0, -0.96]} castShadow>
+        <boxGeometry args={[0.1, 2.0, 0.1]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.65} />
+      </mesh>
+
+      {/* ── Flat roof slab ── (same blue-grey like reference) */}
+      <mesh position={[0, 2.04, -0.06]} castShadow>
+        <boxGeometry args={[2.72, 0.1, 2.02]} />
+        <meshStandardMaterial color={C.roof} roughness={0.55} />
+      </mesh>
+      {/* Roof front edge strip — visible from front */}
+      <mesh position={[0, 2.0, 1.0]}>
+        <boxGeometry args={[2.72, 0.08, 0.06]} />
+        <meshStandardMaterial color={C.roofDk} roughness={0.55} />
+      </mesh>
+      {/* Roof right open edge strip */}
+      <mesh position={[1.3, 2.0, -0.06]}>
+        <boxGeometry args={[0.06, 0.08, 2.0]} />
+        <meshStandardMaterial color={C.roofDk} roughness={0.55} />
+      </mesh>
+
+      {/* ── Window on LEFT wall ── (matches reference exactly) */}
+      {/* Window frame */}
+      <mesh position={[-1.21, 1.08, -0.28]}>
+        <boxGeometry args={[0.07, 0.62, 0.68]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.55} />
+      </mesh>
+      {/* Glass pane */}
+      <mesh position={[-1.19, 1.08, -0.28]}>
+        <boxGeometry args={[0.025, 0.54, 0.6]} />
+        <meshStandardMaterial color="#c8ddf5" roughness={0.05} transparent opacity={0.7} />
+      </mesh>
+      {/* Vertical divider */}
+      <mesh position={[-1.185, 1.08, -0.28]}>
+        <boxGeometry args={[0.02, 0.54, 0.018]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.5} />
+      </mesh>
+      {/* Horizontal divider */}
+      <mesh position={[-1.185, 1.08, -0.28]}>
+        <boxGeometry args={[0.02, 0.018, 0.6]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.5} />
+      </mesh>
+      {/* Window sill */}
+      <mesh position={[-1.18, 0.75, -0.28]}>
+        <boxGeometry args={[0.06, 0.055, 0.76]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </mesh>
+      {/* Window top ledge */}
+      <mesh position={[-1.18, 1.41, -0.28]}>
+        <boxGeometry args={[0.06, 0.04, 0.72]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </mesh>
+
+      {/* ── Back wall shelf (upper right area) ── */}
+      <mesh position={[0.7, 1.62, -0.88]}>
+        <boxGeometry args={[0.96, 0.058, 0.22]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </mesh>
+      {/* Shelf bracket left */}
+      <mesh position={[0.24, 1.5, -0.88]}>
+        <boxGeometry args={[0.03, 0.22, 0.18]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </mesh>
+      {/* Shelf bracket right */}
+      <mesh position={[1.16, 1.5, -0.88]}>
+        <boxGeometry args={[0.03, 0.22, 0.18]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </mesh>
+
+      {/* Radio on shelf */}
+      <mesh position={[1.02, 1.73, -0.8]}>
+        <boxGeometry args={[0.28, 0.16, 0.19]} />
+        <meshStandardMaterial color={C.wall} roughness={0.5} />
+      </mesh>
+      {/* Radio dial */}
+      <mesh position={[1.02, 1.74, -0.71]}>
+        <cylinderGeometry args={[0.048, 0.048, 0.02, 14]} />
+        <meshStandardMaterial color={C.socDk} roughness={0.4} />
+      </mesh>
+      {/* Radio speaker grille lines */}
+      {[-0.04, 0, 0.04].map((dy, i) => (
+        <mesh key={i} position={[0.88, 1.73 + dy, -0.71]}>
+          <boxGeometry args={[0.07, 0.01, 0.02]} />
+          <meshStandardMaterial color={C.wallDk} roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Radio antenna */}
+      <mesh position={[1.1, 1.9, -0.8]} rotation={[0, 0, 0.2]}>
+        <cylinderGeometry args={[0.005, 0.005, 0.22, 5]} />
+        <meshStandardMaterial color={C.socDk} roughness={0.5} />
+      </mesh>
+
+      {/* Books stack on shelf */}
+      <group position={[0.44, 1.73, -0.82]}>
+        {/* Lying flat stack */}
+        {[0, 0.03, 0.06].map((dy, i) => (
+          <mesh key={i} position={[0, dy, 0]}>
+            <boxGeometry args={[0.22, 0.028, 0.16]} />
+            <meshStandardMaterial color={[C.socDk, C.wallDk, C.wall][i]} roughness={0.7} />
+          </mesh>
+        ))}
+        {/* Standing books */}
+        {[0.28, 0.34, 0.41].map((x, i) => (
+          <mesh key={i} position={[x, 0.1, 0]}>
+            <boxGeometry args={[0.055, 0.2, 0.15]} />
+            <meshStandardMaterial color={[C.wall, C.socDk, C.wallDk][i]} roughness={0.6} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* ── Skirting / baseboard along both walls ── */}
+      <mesh position={[0, 0.1, -0.91]}>
+        <boxGeometry args={[2.58, 0.14, 0.04]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.7} />
+      </mesh>
+      <mesh position={[-1.2, 0.1, -0.06]}>
+        <boxGeometry args={[0.04, 0.14, 1.84]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.7} />
+      </mesh>
+
+      {/* ── Interior lights ── */}
+      {/* Main ceiling light */}
+      <pointLight position={[0.2, 1.8, -0.2]} intensity={2.2} color="#ffe8c0" distance={4.0} decay={2} />
+      {/* Secondary fill from open side */}
+      <pointLight position={[1.0, 1.2, 0.6]} intensity={0.6} color="#d0d8f0" distance={3.0} decay={2} />
     </group>
   )
 }
