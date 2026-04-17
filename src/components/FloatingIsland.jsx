@@ -1006,7 +1006,7 @@ function SocialBadges({ onSelect }) {
 }
 
 
-// ── Welcome Sign — stone nameplate with real text ─────────────────────────
+// ── Welcome Sign — stone nameplate, no external deps ─────────────────────
 function WelcomeSign({ onSelect }) {
   return (
     <group
@@ -1049,19 +1049,6 @@ function WelcomeSign({ onSelect }) {
         <boxGeometry args={[0.80, 0.20, 0.003]} />
         <meshStandardMaterial color={C.islandTop} roughness={0.75} />
       </mesh>
-
-      {/* ── Actual "Welcome" text ── */}
-      <Text
-        position={[0, 0, 0.092]}
-        fontSize={0.11}
-        color={C.woodDk}
-        anchorX="center"
-        anchorY="middle"
-        font="https://fonts.gstatic.com/s/satisfy/v21/rP2Hp2yn6lkG50LoCZOIHQ.woff"
-        maxWidth={0.75}
-      >
-        Welcome
-      </Text>
 
       {/* Two small base feet */}
       {[-0.26, 0.26].map((x, i) => (
