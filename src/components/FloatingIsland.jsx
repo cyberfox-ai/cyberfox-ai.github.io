@@ -687,171 +687,151 @@ function DeskSetup({ onSelect }) {
   )
 }
 
-// ── Helper: one flat pan-shaped leaf ─────────────────────────────────────
-function PanLeaf({ position, rotation, scale = 1 }) {
-  // Flat teardrop/spade leaf: squashed sphere, wide & flat
+// ── LOW-POLY FLAT LEAF (hexagonal disc shape) ─────────────────────────────
+function FlatLeaf({ position, rotation, scaleX = 1, scaleZ = 1 }) {
   return (
-    <mesh position={position} rotation={rotation} castShadow receiveShadow>
-      <sphereGeometry args={[0.18 * scale, 7, 5]} />
+    <mesh
+      position={position}
+      rotation={rotation}
+      scale={[scaleX, 0.18, scaleZ]}
+      castShadow
+    >
+      <cylinderGeometry args={[0.32, 0.28, 1, 6]} />
       <meshStandardMaterial color={C.island} roughness={1.0} flatShading />
     </mesh>
   )
 }
 
-// ── Helper: cylindrical branch segment ────────────────────────────────────
-function Branch({ start, end, rTop = 0.04, rBot = 0.07 }) {
+// ── BRANCH SEGMENT ────────────────────────────────────────────────────────
+function Branch({ start, end, rBot = 0.08, rTop = 0.05 }) {
   const s = new THREE.Vector3(...start)
   const e = new THREE.Vector3(...end)
   const dir = e.clone().sub(s)
   const len = dir.length()
-  const mid = s.clone().add(dir.clone().multiplyScalar(0.5))
+  const mid = s.clone().lerp(e, 0.5)
   const quat = new THREE.Quaternion().setFromUnitVectors(
     new THREE.Vector3(0, 1, 0),
-    dir.clone().normalize()
+    dir.normalize()
   )
   const euler = new THREE.Euler().setFromQuaternion(quat)
   return (
     <mesh position={[mid.x, mid.y, mid.z]} rotation={[euler.x, euler.y, euler.z]} castShadow>
       <cylinderGeometry args={[rTop, rBot, len, 7]} />
-      <meshStandardMaterial color={C.wood} roughness={0.9} />
+      <meshStandardMaterial color={C.wood} roughness={0.85} />
     </mesh>
   )
 }
 
-// ── Leaf cluster: fan of pan-shaped leaves at a twig tip ──────────────────
-function LeafCluster({ position, baseRotY = 0, count = 5, spread = 0.55, scale = 1 }) {
-  return (
-    <group position={position} rotation={[0, baseRotY, 0]}>
-      {Array.from({ length: count }).map((_, i) => {
-        const angle = ((i / count) * Math.PI * 2) + (Math.random() * 0.3)
-        const tilt  = 0.25 + (i % 3) * 0.18
-        const dist  = spread * (0.75 + (i % 2) * 0.35)
-        return (
-          <mesh
-            key={i}
-            position={[
-              Math.cos(angle) * dist,
-              (i % 3 === 1 ? 0.12 : -0.05),
-              Math.sin(angle) * dist,
-            ]}
-            rotation={[
-              -tilt + (i % 2 === 0 ? 0.1 : -0.1),
-              angle + 0.4,
-              (i % 2 === 0 ? 0.15 : -0.12),
-            ]}
-            scale={[
-              scale * (1.55 + (i % 3) * 0.18),   // wide X
-              scale * (0.28 + (i % 2) * 0.06),   // very flat Y
-              scale * (1.0  + (i % 3) * 0.12),   // medium Z
-            ]}
-            castShadow
-          >
-            <sphereGeometry args={[0.18, 7, 5]} />
-            <meshStandardMaterial color={C.island} roughness={1.0} flatShading />
-          </mesh>
-        )
-      })}
-    </group>
-  )
-}
-
-// ── Main Tree ─────────────────────────────────────────────────────────────
+// ── MAIN TREE — single tree, right of building, slight lean toward room ───
 function Tree({ position = [2.0, 0.28, -1.3] }) {
   return (
-    <group position={position}>
-
-      {/* ── Ground root flares (6 fins) ── */}
-      {[0,1,2,3,4,5].map(i => {
-        const a = (i / 6) * Math.PI * 2
-        return (
-          <mesh key={i}
-            position={[Math.cos(a)*0.30, -0.10, Math.sin(a)*0.30]}
-            rotation={[0, -a, 0.50]}
-            castShadow
-          >
-            <boxGeometry args={[0.09, 0.28, 0.20]} />
-            <meshStandardMaterial color={C.wood} roughness={0.9} />
-          </mesh>
-        )
-      })}
-
-      {/* ── Trunk: 3-segment baobab with mid-bulge ── */}
-      {/* Base — very wide */}
-      <mesh position={[0, 0.38, 0]} castShadow>
-        <cylinderGeometry args={[0.26, 0.38, 0.76, 10]} />
-        <meshStandardMaterial color={C.wood} roughness={0.9} />
+    <group position={position} rotation={[0, 0.3, -0.08]}>
+      {/* ── TRUNK: thick baobab segments with ring seams ── */}
+      {/* Base — widest, very chunky */}
+      <mesh position={[0, 0.30, 0]} castShadow>
+        <cylinderGeometry args={[0.22, 0.32, 0.60, 8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
       </mesh>
-      {/* Mid — slight bulge outward (wider than top of base) */}
-      <mesh position={[0, 0.95, 0]} castShadow>
-        <cylinderGeometry args={[0.30, 0.26, 0.42, 10]} />
-        <meshStandardMaterial color={C.wood} roughness={0.9} />
+      {/* Lower mid */}
+      <mesh position={[0, 0.75, 0]} castShadow>
+        <cylinderGeometry args={[0.20, 0.22, 0.50, 8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
       </mesh>
-      {/* Upper mid */}
-      <mesh position={[0, 1.30, 0]} castShadow>
-        <cylinderGeometry args={[0.22, 0.30, 0.38, 9]} />
-        <meshStandardMaterial color={C.wood} roughness={0.9} />
+      {/* Mid bulge */}
+      <mesh position={[0, 1.15, 0]} castShadow>
+        <cylinderGeometry args={[0.23, 0.20, 0.45, 8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
       </mesh>
-      {/* Neck — narrows before fork */}
-      <mesh position={[0, 1.60, 0]} castShadow>
-        <cylinderGeometry args={[0.14, 0.22, 0.36, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.9} />
+      {/* Upper — narrows */}
+      <mesh position={[0, 1.52, 0]} castShadow>
+        <cylinderGeometry args={[0.17, 0.23, 0.42, 8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
       </mesh>
-      {/* Fork ball */}
+      {/* Neck — before fork */}
       <mesh position={[0, 1.82, 0]} castShadow>
-        <sphereGeometry args={[0.17, 8, 6]} />
-        <meshStandardMaterial color={C.wood} roughness={0.9} />
+        <cylinderGeometry args={[0.11, 0.17, 0.36, 7]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
+      </mesh>
+      {/* Fork junction sphere */}
+      <mesh position={[0, 2.02, 0]} castShadow>
+        <sphereGeometry args={[0.14, 7, 5]} />
+        <meshStandardMaterial color={C.wood} roughness={0.85} />
       </mesh>
 
-      {/* ── 2 main thick branches splitting left & right ── */}
-      {/* Left branch — sweeps up-left */}
-      <Branch start={[-0.05, 1.82, 0.02]} end={[-0.55, 2.40, -0.10]} rBot={0.13} rTop={0.09} />
-      <Branch start={[-0.55, 2.40, -0.10]} end={[-0.90, 2.85, 0.15]} rBot={0.09} rTop={0.06} />
-      {/* Right branch — sweeps up-right */}
-      <Branch start={[0.05, 1.82, -0.02]} end={[0.52, 2.38,  0.10]} rBot={0.13} rTop={0.09} />
-      <Branch start={[0.52, 2.38,  0.10]} end={[0.88, 2.82, -0.12]} rBot={0.09} rTop={0.06} />
+      {/* ── MAIN BRANCHES — 4 arms spreading outward ── */}
+      {/* Branch LEFT — sweeps far left-back */}
+      <Branch start={[0, 2.02, 0]}        end={[-0.65, 2.58, -0.30]} rBot={0.10} rTop={0.07} />
+      <Branch start={[-0.65, 2.58, -0.30]} end={[-1.20, 2.90, -0.10]} rBot={0.07} rTop={0.05} />
+      <Branch start={[-1.20, 2.90, -0.10]} end={[-1.68, 3.05,  0.20]} rBot={0.05} rTop={0.03} />
 
-      {/* ── Sub-branches from left arm ── */}
-      <Branch start={[-0.55, 2.40, -0.10]} end={[-1.10, 2.62,  0.40]} rBot={0.06} rTop={0.04} />
-      <Branch start={[-0.55, 2.40, -0.10]} end={[-0.60, 2.72, -0.55]} rBot={0.06} rTop={0.04} />
-      <Branch start={[-0.90, 2.85,  0.15]} end={[-1.35, 3.05, -0.10]} rBot={0.05} rTop={0.03} />
-      <Branch start={[-0.90, 2.85,  0.15]} end={[-0.70, 3.18,  0.50]} rBot={0.05} rTop={0.03} />
+      {/* Branch RIGHT — sweeps far right-forward */}
+      <Branch start={[0, 2.02, 0]}       end={[0.62, 2.55,  0.28]} rBot={0.10} rTop={0.07} />
+      <Branch start={[0.62, 2.55, 0.28]} end={[1.18, 2.88,  0.08]} rBot={0.07} rTop={0.05} />
+      <Branch start={[1.18, 2.88, 0.08]} end={[1.65, 3.02, -0.18]} rBot={0.05} rTop={0.03} />
 
-      {/* ── Sub-branches from right arm ── */}
-      <Branch start={[0.52, 2.38,  0.10]} end={[1.08, 2.60, -0.38]} rBot={0.06} rTop={0.04} />
-      <Branch start={[0.52, 2.38,  0.10]} end={[0.58, 2.70,  0.52]} rBot={0.06} rTop={0.04} />
-      <Branch start={[0.88, 2.82, -0.12]} end={[1.32, 3.02,  0.12]} rBot={0.05} rTop={0.03} />
-      <Branch start={[0.88, 2.82, -0.12]} end={[0.68, 3.16, -0.48]} rBot={0.05} rTop={0.03} />
+      {/* Branch BACK-LEFT — goes up-back */}
+      <Branch start={[0, 2.02, 0]}         end={[-0.30, 2.60, -0.62]} rBot={0.09} rTop={0.06} />
+      <Branch start={[-0.30, 2.60, -0.62]} end={[-0.20, 2.95, -1.10]} rBot={0.06} rTop={0.04} />
+      <Branch start={[-0.20, 2.95, -1.10]} end={[ 0.10, 3.08, -1.50]} rBot={0.04} rTop={0.02} />
 
-      {/* ── Center top branch ── */}
-      <Branch start={[0, 1.82, 0]} end={[0.08, 2.65, 0.05]} rBot={0.10} rTop={0.06} />
-      <Branch start={[0.08, 2.65, 0.05]} end={[-0.18, 3.10, 0.30]} rBot={0.05} rTop={0.03} />
-      <Branch start={[0.08, 2.65, 0.05]} end={[ 0.22, 3.12,-0.28]} rBot={0.05} rTop={0.03} />
+      {/* Branch FRONT-RIGHT — goes up-forward */}
+      <Branch start={[0, 2.02, 0]}        end={[0.28, 2.58,  0.60]} rBot={0.09} rTop={0.06} />
+      <Branch start={[0.28, 2.58, 0.60]}  end={[0.15, 2.92,  1.08]} rBot={0.06} rTop={0.04} />
+      <Branch start={[0.15, 2.92, 1.08]}  end={[-0.15, 3.05, 1.45]} rBot={0.04} rTop={0.02} />
 
-      {/* ══ LEAF CLUSTERS at every twig tip ══ */}
-      {/* Left arm tips */}
-      <LeafCluster position={[-1.10, 2.68,  0.40]} baseRotY={0.3}  count={6} spread={0.50} scale={0.95} />
-      <LeafCluster position={[-0.60, 2.78, -0.55]} baseRotY={1.1}  count={5} spread={0.45} scale={0.90} />
-      <LeafCluster position={[-1.35, 3.10, -0.10]} baseRotY={2.0}  count={6} spread={0.52} scale={1.00} />
-      <LeafCluster position={[-0.70, 3.24,  0.50]} baseRotY={0.8}  count={5} spread={0.48} scale={0.88} />
-      <LeafCluster position={[-0.90, 2.90,  0.15]} baseRotY={1.5}  count={4} spread={0.42} scale={0.85} />
+      {/* ── TWIGS off main branches ── */}
+      <Branch start={[-0.65, 2.58, -0.30]} end={[-0.80, 2.95,  0.28]} rBot={0.04} rTop={0.02} />
+      <Branch start={[-1.20, 2.90, -0.10]} end={[-1.05, 3.18, -0.55]} rBot={0.04} rTop={0.02} />
+      <Branch start={[ 0.62, 2.55,  0.28]} end={[ 0.75, 2.92, -0.28]} rBot={0.04} rTop={0.02} />
+      <Branch start={[ 1.18, 2.88,  0.08]} end={[ 1.02, 3.16,  0.52]} rBot={0.04} rTop={0.02} />
+      <Branch start={[-0.30, 2.60, -0.62]} end={[ 0.18, 2.90, -0.70]} rBot={0.03} rTop={0.02} />
+      <Branch start={[ 0.28, 2.58,  0.60]} end={[-0.18, 2.88,  0.72]} rBot={0.03} rTop={0.02} />
 
-      {/* Right arm tips */}
-      <LeafCluster position={[ 1.08, 2.66, -0.38]} baseRotY={-0.3} count={6} spread={0.50} scale={0.95} />
-      <LeafCluster position={[ 0.58, 2.76,  0.52]} baseRotY={-1.1} count={5} spread={0.45} scale={0.90} />
-      <LeafCluster position={[ 1.32, 3.08,  0.12]} baseRotY={-2.0} count={6} spread={0.52} scale={1.00} />
-      <LeafCluster position={[ 0.68, 3.22, -0.48]} baseRotY={-0.8} count={5} spread={0.48} scale={0.88} />
-      <LeafCluster position={[ 0.88, 2.88, -0.12]} baseRotY={-1.5} count={4} spread={0.42} scale={0.85} />
+      {/* ══ FLAT HEX LEAVES — scattered at all branch/twig ends ══ */}
 
-      {/* Center top tips */}
-      <LeafCluster position={[-0.18, 3.16,  0.30]} baseRotY={0.5}  count={5} spread={0.46} scale={0.90} />
-      <LeafCluster position={[ 0.22, 3.18, -0.28]} baseRotY={-0.5} count={5} spread={0.46} scale={0.90} />
-      <LeafCluster position={[ 0.08, 2.70,  0.05]} baseRotY={1.0}  count={4} spread={0.40} scale={0.85} />
+      {/* LEFT arm leaves */}
+      <FlatLeaf position={[-1.68, 3.10,  0.20]} rotation={[0.20, 0.5, 0.15]}  scaleX={1.1} scaleZ={0.9} />
+      <FlatLeaf position={[-1.50, 3.05, -0.10]} rotation={[-0.15, 1.2, 0.10]} scaleX={0.9} scaleZ={1.0} />
+      <FlatLeaf position={[-1.35, 3.18,  0.40]} rotation={[0.25, 0.8, -0.12]} scaleX={1.0} scaleZ={0.85} />
+      <FlatLeaf position={[-1.15, 2.98, -0.52]} rotation={[-0.20, 2.0, 0.18]} scaleX={1.0} scaleZ={0.9} />
+      <FlatLeaf position={[-0.85, 3.00,  0.35]} rotation={[0.18, 0.3, 0.08]}  scaleX={0.9} scaleZ={0.85} />
+      <FlatLeaf position={[-0.92, 3.22, -0.40]} rotation={[0.22, 1.5, -0.15]} scaleX={0.85} scaleZ={0.90} />
+      <FlatLeaf position={[-1.55, 2.88,  0.55]} rotation={[0.30, 0.2, 0.20]}  scaleX={0.80} scaleZ={0.75} />
+      <FlatLeaf position={[-1.78, 3.00, -0.30]} rotation={[-0.10, 1.8, 0.12]} scaleX={0.95} scaleZ={0.80} />
 
-      {/* Extra fill clusters for density */}
-      <LeafCluster position={[-0.52, 2.48, -0.08]} baseRotY={0.6}  count={4} spread={0.38} scale={0.80} />
-      <LeafCluster position={[ 0.50, 2.46,  0.08]} baseRotY={-0.6} count={4} spread={0.38} scale={0.80} />
-      <LeafCluster position={[-0.20, 2.80,  0.55]} baseRotY={1.8}  count={4} spread={0.40} scale={0.82} />
-      <LeafCluster position={[ 0.18, 2.82, -0.52]} baseRotY={-1.8} count={4} spread={0.40} scale={0.82} />
+      {/* RIGHT arm leaves */}
+      <FlatLeaf position={[1.65, 3.08, -0.18]}  rotation={[0.18, -0.5, -0.12]} scaleX={1.1} scaleZ={0.9} />
+      <FlatLeaf position={[1.48, 3.02,  0.14]}  rotation={[-0.12, -1.2, 0.10]} scaleX={0.9} scaleZ={1.0} />
+      <FlatLeaf position={[1.32, 3.20, -0.40]}  rotation={[0.22, -0.8, 0.14]}  scaleX={1.0} scaleZ={0.85} />
+      <FlatLeaf position={[1.12, 2.96,  0.50]}  rotation={[-0.18, -2.0, -0.18]} scaleX={1.0} scaleZ={0.9} />
+      <FlatLeaf position={[0.82, 3.02, -0.32]}  rotation={[0.15, -0.3, -0.08]}  scaleX={0.9} scaleZ={0.85} />
+      <FlatLeaf position={[0.90, 3.24,  0.42]}  rotation={[0.20, -1.5, 0.16]}   scaleX={0.85} scaleZ={0.9} />
+      <FlatLeaf position={[1.50, 2.85, -0.52]}  rotation={[0.28, -0.2, -0.18]}  scaleX={0.8} scaleZ={0.75} />
+      <FlatLeaf position={[1.72, 2.98,  0.28]}  rotation={[-0.08, -1.8, -0.12]} scaleX={0.95} scaleZ={0.8} />
+
+      {/* BACK-LEFT arm leaves */}
+      <FlatLeaf position={[0.10, 3.14, -1.50]}  rotation={[0.30, 0.1, 0.08]}   scaleX={1.0} scaleZ={0.9} />
+      <FlatLeaf position={[-0.25, 3.05, -1.32]} rotation={[-0.15, 0.9, -0.10]} scaleX={0.9} scaleZ={0.85} />
+      <FlatLeaf position={[0.32, 3.00, -1.20]}  rotation={[0.20, 1.6, 0.15]}   scaleX={0.85} scaleZ={0.9} />
+      <FlatLeaf position={[-0.15, 3.22, -1.00]} rotation={[0.25, 0.4, -0.12]}  scaleX={0.9} scaleZ={0.8} />
+      <FlatLeaf position={[0.18, 2.88, -0.82]}  rotation={[-0.10, 2.2, 0.18]}  scaleX={0.8} scaleZ={0.75} />
+      <FlatLeaf position={[0.22, 3.10, -0.68]}  rotation={[0.15, 0.7, 0.10]}   scaleX={0.75} scaleZ={0.8} />
+
+      {/* FRONT-RIGHT arm leaves */}
+      <FlatLeaf position={[-0.15, 3.12,  1.45]} rotation={[0.28, -0.1, -0.08]}  scaleX={1.0} scaleZ={0.9} />
+      <FlatLeaf position={[0.22, 3.02,  1.28]}  rotation={[-0.12, -0.9, 0.10]}  scaleX={0.9} scaleZ={0.85} />
+      <FlatLeaf position={[-0.35, 2.98,  1.18]} rotation={[0.18, -1.6, -0.15]}  scaleX={0.85} scaleZ={0.9} />
+      <FlatLeaf position={[0.12, 3.20,  0.98]}  rotation={[0.22, -0.4, 0.12]}   scaleX={0.9} scaleZ={0.8} />
+      <FlatLeaf position={[-0.20, 2.86,  0.80]} rotation={[-0.10, -2.2, -0.18]} scaleX={0.8} scaleZ={0.75} />
+      <FlatLeaf position={[-0.25, 3.08,  0.65]} rotation={[0.15, -0.7, -0.10]}  scaleX={0.75} scaleZ={0.8} />
+
+      {/* CENTER / fill leaves near fork */}
+      <FlatLeaf position={[-0.40, 2.75, -0.20]} rotation={[0.12, 0.6, 0.08]}   scaleX={0.85} scaleZ={0.80} />
+      <FlatLeaf position={[ 0.38, 2.78,  0.18]} rotation={[0.10, -0.6, -0.08]} scaleX={0.85} scaleZ={0.80} />
+      <FlatLeaf position={[-0.15, 2.72,  0.35]} rotation={[0.15, 1.2, 0.10]}   scaleX={0.80} scaleZ={0.75} />
+      <FlatLeaf position={[ 0.15, 2.74, -0.32]} rotation={[0.12, -1.2, -0.10]} scaleX={0.80} scaleZ={0.75} />
+      <FlatLeaf position={[-0.55, 2.82,  0.50]} rotation={[0.20, 0.9, 0.12]}   scaleX={0.78} scaleZ={0.72} />
+      <FlatLeaf position={[ 0.52, 2.80, -0.48]} rotation={[0.18, -0.9, -0.12]} scaleX={0.78} scaleZ={0.72} />
     </group>
   )
 }
