@@ -1,5 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
+import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 
@@ -71,20 +72,17 @@ function House() {
   return (
     <group position={[0.1, 0.27, -0.5]}>
 
-      {/* ── Wooden plank floor ── */}
-      {/* Base slab */}
+      {/* ── Floor ── */}
       <mesh position={[0, 0.02, 0]} receiveShadow>
         <boxGeometry args={[2.6, 0.06, 2.0]} />
         <meshStandardMaterial color="#d8d4cc" roughness={0.8} />
       </mesh>
-      {/* Floor planks — horizontal strips */}
       {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98].map((z, i) => (
         <mesh key={i} position={[0, 0.054, z - 0.1]} receiveShadow>
           <boxGeometry args={[2.58, 0.012, 0.3]} />
           <meshStandardMaterial color={i % 2 === 0 ? '#d4d0c8' : '#ccc8c0'} roughness={0.75} />
         </mesh>
       ))}
-      {/* Plank gap lines */}
       {[-0.82, -0.46, -0.1, 0.26, 0.62].map((z, i) => (
         <mesh key={i} position={[0, 0.061, z + 0.15]}>
           <boxGeometry args={[2.58, 0.004, 0.008]} />
@@ -92,125 +90,94 @@ function House() {
         </mesh>
       ))}
 
-      {/* ── Back wall ── */}
-      <mesh position={[0, 1.0, -0.96]} castShadow>
-        <boxGeometry args={[2.62, 2.0, 0.1]} />
+      {/* ── Back wall — ROUNDED ── */}
+      <RoundedBox args={[2.62, 2.0, 0.1]} radius={0.04} smoothness={4} position={[0, 1.0, -0.96]} castShadow>
         <meshStandardMaterial color={C.wall} roughness={0.65} />
-      </mesh>
-      {/* Back wall inner face (slightly different shade) */}
+      </RoundedBox>
       <mesh position={[0, 1.0, -0.91]}>
         <boxGeometry args={[2.6, 1.98, 0.01]} />
         <meshStandardMaterial color={C.accent} roughness={0.6} />
       </mesh>
 
-      {/* ── Left wall ── */}
-      <mesh position={[-1.25, 1.0, -0.06]} castShadow>
-        <boxGeometry args={[0.1, 2.0, 1.9]} />
+      {/* ── Left wall — ROUNDED ── */}
+      <RoundedBox args={[0.1, 2.0, 1.9]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -0.06]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
-      </mesh>
-      {/* Left wall inner face */}
-      <mesh position={[-1.2, 1.0, -0.06]}>
-        <boxGeometry args={[0.01, 1.98, 1.88]} />
-        <meshStandardMaterial color={C.wall} roughness={0.6} />
-      </mesh>
+      </RoundedBox>
 
-      {/* ── Corner column where back meets left ── */}
-      <mesh position={[-1.25, 1.0, -0.96]} castShadow>
-        <boxGeometry args={[0.1, 2.0, 0.1]} />
+      {/* ── Corner column ── */}
+      <RoundedBox args={[0.12, 2.0, 0.12]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -0.96]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
-      </mesh>
+      </RoundedBox>
 
-
-      {/* ── Window on LEFT wall ── (matches reference exactly) */}
-      {/* Window frame */}
-      <mesh position={[-1.21, 1.08, -0.28]}>
-        <boxGeometry args={[0.07, 0.62, 0.68]} />
+      {/* ── Window frame — ROUNDED ── */}
+      <RoundedBox args={[0.07, 0.62, 0.68]} radius={0.025} smoothness={4} position={[-1.21, 1.08, -0.28]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.55} />
-      </mesh>
-      {/* Glass pane */}
+      </RoundedBox>
       <mesh position={[-1.19, 1.08, -0.28]}>
         <boxGeometry args={[0.025, 0.54, 0.6]} />
         <meshStandardMaterial color="#c8ddf5" roughness={0.05} transparent opacity={0.7} />
       </mesh>
-      {/* Vertical divider */}
       <mesh position={[-1.185, 1.08, -0.28]}>
         <boxGeometry args={[0.02, 0.54, 0.018]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.5} />
       </mesh>
-      {/* Horizontal divider */}
       <mesh position={[-1.185, 1.08, -0.28]}>
         <boxGeometry args={[0.02, 0.018, 0.6]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.5} />
       </mesh>
-      {/* Window sill */}
-      <mesh position={[-1.18, 0.75, -0.28]}>
-        <boxGeometry args={[0.06, 0.055, 0.76]} />
+      {/* Window sill — ROUNDED */}
+      <RoundedBox args={[0.06, 0.055, 0.76]} radius={0.02} smoothness={3} position={[-1.18, 0.75, -0.28]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
-      {/* Window top ledge */}
-      <mesh position={[-1.18, 1.41, -0.28]}>
-        <boxGeometry args={[0.06, 0.04, 0.72]} />
+      </RoundedBox>
+      <RoundedBox args={[0.06, 0.04, 0.72]} radius={0.018} smoothness={3} position={[-1.18, 1.41, -0.28]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
+      </RoundedBox>
 
-      {/* ── Back wall shelf (upper right area) ── */}
-      <mesh position={[0.7, 1.62, -0.88]}>
-        <boxGeometry args={[0.96, 0.058, 0.22]} />
+      {/* ── Shelf — ROUNDED ── */}
+      <RoundedBox args={[0.96, 0.058, 0.22]} radius={0.02} smoothness={3} position={[0.7, 1.62, -0.88]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
-      {/* Shelf bracket left */}
-      <mesh position={[0.24, 1.5, -0.88]}>
-        <boxGeometry args={[0.03, 0.22, 0.18]} />
+      </RoundedBox>
+      <RoundedBox args={[0.03, 0.22, 0.18]} radius={0.012} smoothness={3} position={[0.24, 1.5, -0.88]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
-      {/* Shelf bracket right */}
-      <mesh position={[1.16, 1.5, -0.88]}>
-        <boxGeometry args={[0.03, 0.22, 0.18]} />
+      </RoundedBox>
+      <RoundedBox args={[0.03, 0.22, 0.18]} radius={0.012} smoothness={3} position={[1.16, 1.5, -0.88]}>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
+      </RoundedBox>
 
-      {/* Radio on shelf */}
-      <mesh position={[1.02, 1.73, -0.8]}>
-        <boxGeometry args={[0.28, 0.16, 0.19]} />
+      {/* Radio — ROUNDED */}
+      <RoundedBox args={[0.28, 0.16, 0.19]} radius={0.03} smoothness={4} position={[1.02, 1.73, -0.8]}>
         <meshStandardMaterial color={C.wall} roughness={0.5} />
-      </mesh>
-      {/* Radio dial */}
+      </RoundedBox>
       <mesh position={[1.02, 1.74, -0.71]}>
         <cylinderGeometry args={[0.048, 0.048, 0.02, 14]} />
         <meshStandardMaterial color={C.socDk} roughness={0.4} />
       </mesh>
-      {/* Radio speaker grille lines */}
       {[-0.04, 0, 0.04].map((dy, i) => (
         <mesh key={i} position={[0.88, 1.73 + dy, -0.71]}>
           <boxGeometry args={[0.07, 0.01, 0.02]} />
           <meshStandardMaterial color={C.wallDk} roughness={0.5} />
         </mesh>
       ))}
-      {/* Radio antenna */}
       <mesh position={[1.1, 1.9, -0.8]} rotation={[0, 0, 0.2]}>
         <cylinderGeometry args={[0.005, 0.005, 0.22, 5]} />
         <meshStandardMaterial color={C.socDk} roughness={0.5} />
       </mesh>
 
-      {/* Books stack on shelf */}
+      {/* Books — ROUNDED */}
       <group position={[0.44, 1.73, -0.82]}>
-        {/* Lying flat stack */}
         {[0, 0.03, 0.06].map((dy, i) => (
-          <mesh key={i} position={[0, dy, 0]}>
-            <boxGeometry args={[0.22, 0.028, 0.16]} />
+          <RoundedBox key={i} args={[0.22, 0.028, 0.16]} radius={0.008} smoothness={3} position={[0, dy, 0]}>
             <meshStandardMaterial color={[C.socDk, C.wallDk, C.wall][i]} roughness={0.7} />
-          </mesh>
+          </RoundedBox>
         ))}
-        {/* Standing books */}
         {[0.28, 0.34, 0.41].map((x, i) => (
-          <mesh key={i} position={[x, 0.1, 0]}>
-            <boxGeometry args={[0.055, 0.2, 0.15]} />
+          <RoundedBox key={i} args={[0.055, 0.2, 0.15]} radius={0.01} smoothness={3} position={[x, 0.1, 0]}>
             <meshStandardMaterial color={[C.wall, C.socDk, C.wallDk][i]} roughness={0.6} />
-          </mesh>
+          </RoundedBox>
         ))}
       </group>
 
-      {/* ── Skirting / baseboard along both walls ── */}
+      {/* Skirting */}
       <mesh position={[0, 0.1, -0.91]}>
         <boxGeometry args={[2.58, 0.14, 0.04]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
@@ -220,14 +187,12 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
 
-      {/* ── Interior lights ── */}
-      {/* Main ceiling light */}
       <pointLight position={[0.2, 1.8, -0.2]} intensity={2.2} color="#ffe8c0" distance={4.0} decay={2} />
-      {/* Secondary fill from open side */}
       <pointLight position={[1.0, 1.2, 0.6]} intensity={0.6} color="#d0d8f0" distance={3.0} decay={2} />
     </group>
   )
 }
+
 
 // ── Keyboard with individual keycaps ──────────────────────────────────────
 function Keyboard({ position }) {
@@ -384,195 +349,126 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
 function DeskSetup({ onSelect }) {
   return (
     <group position={[0.1, 0.27, -0.55]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
- 
-      {/* ── Desk surface ── */}
-      {/* Main top */}
-      <mesh position={[0, 0.7, -0.05]} castShadow>
-        <boxGeometry args={[2.0, 0.07, 0.95]} />
+
+      {/* ── Desk top — ROUNDED ── */}
+      <RoundedBox args={[2.0, 0.07, 0.95]} radius={0.025} smoothness={4} position={[0, 0.7, -0.05]} castShadow>
         <meshStandardMaterial color="#dedad4" roughness={0.55} />
-      </mesh>
-      {/* Front edge lip */}
-      <mesh position={[0, 0.675, 0.455]}>
-        <boxGeometry args={[2.0, 0.04, 0.04]} />
-        <meshStandardMaterial color="#c8c4be" roughness={0.55} />
-      </mesh>
- 
-      {/* ── Right drawer tower (like reference) ── */}
-      <mesh position={[0.8, 0.34, -0.05]} castShadow>
-        <boxGeometry args={[0.38, 0.68, 0.88]} />
+      </RoundedBox>
+
+      {/* ── Right drawer tower — ROUNDED ── */}
+      <RoundedBox args={[0.38, 0.68, 0.88]} radius={0.025} smoothness={4} position={[0.8, 0.34, -0.05]} castShadow>
         <meshStandardMaterial color="#d8d4ce" roughness={0.6} />
-      </mesh>
-      {/* Drawer fronts — 3 drawers */}
+      </RoundedBox>
       {[0.54, 0.34, 0.14].map((y, i) => (
         <group key={i}>
-          <mesh position={[0.8, y, 0.41]}>
-            <boxGeometry args={[0.34, 0.16, 0.04]} />
+          <RoundedBox args={[0.34, 0.16, 0.04]} radius={0.018} smoothness={3} position={[0.8, y, 0.41]}>
             <meshStandardMaterial color="#e0dcd6" roughness={0.5} />
-          </mesh>
-          {/* Drawer handle */}
-          <mesh position={[0.8, y, 0.435]}>
-            <boxGeometry args={[0.1, 0.026, 0.018]} />
+          </RoundedBox>
+          <RoundedBox args={[0.1, 0.026, 0.018]} radius={0.008} smoothness={3} position={[0.8, y, 0.435]}>
             <meshStandardMaterial color="#b0aca6" roughness={0.35} metalness={0.2} />
-          </mesh>
+          </RoundedBox>
         </group>
       ))}
- 
-      {/* ── Left leg panel ── */}
-      <mesh position={[-0.88, 0.34, -0.05]} castShadow>
-        <boxGeometry args={[0.06, 0.68, 0.86]} />
+
+      {/* ── Left leg panel — ROUNDED ── */}
+      <RoundedBox args={[0.06, 0.68, 0.86]} radius={0.02} smoothness={3} position={[-0.88, 0.34, -0.05]} castShadow>
         <meshStandardMaterial color="#d0ccc6" roughness={0.65} />
-      </mesh>
- 
-      {/* ── Monitors ── */}
- 
- 
-      {/* CENTER-BACK: Big CRT monitor (Kali Linux / code) */}
+      </RoundedBox>
+
+      {/* ── CRT Monitor — ROUNDED body ── */}
       <group position={[0.08, 1.08, -0.44]}>
-        <CRTMonitor
-          position={[0, 0, 0]}
-          width={0.84} height={0.64} depth={0.5}
-          screenColor="#0d1117"
-          screenContent={
-            <group position={[0, 0.04, 0.275]}>
-              {/* Kali dragon wallpaper */}
-              <mesh position={[0, 0, 0.001]}>
-                <boxGeometry args={[0.62, 0.41, 0.001]} />
-                <meshStandardMaterial color="#0d1a3a" roughness={0.05} />
-              </mesh>
-              {/* Dragon silhouette */}
-              <mesh position={[0, 0.02, 0.003]}>
-                <boxGeometry args={[0.18, 0.32, 0.001]} />
-                <meshStandardMaterial color="#1a3a88" emissive="#1a3a88" emissiveIntensity={0.5} roughness={0.1} />
-              </mesh>
-              {/* Wings */}
-              <mesh position={[-0.14, 0.04, 0.003]} rotation={[0,0,0.25]}>
-                <boxGeometry args={[0.18, 0.22, 0.001]} />
-                <meshStandardMaterial color="#152e70" emissive="#152e70" emissiveIntensity={0.4} roughness={0.1} />
-              </mesh>
-              <mesh position={[0.14, 0.04, 0.003]} rotation={[0,0,-0.25]}>
-                <boxGeometry args={[0.18, 0.22, 0.001]} />
-                <meshStandardMaterial color="#152e70" emissive="#152e70" emissiveIntensity={0.4} roughness={0.1} />
-              </mesh>
-              {/* Code lines overlay */}
-              {[0.14, 0.08, 0.02, -0.04, -0.1].map((y, i) => (
-                <mesh key={i} position={[-0.1 + (i%2)*0.06, y, 0.005]}>
-                  <boxGeometry args={[0.2 + (i%3)*0.05, 0.014, 0.001]} />
-                  <meshStandardMaterial color="#4488ff" emissive="#4488ff" emissiveIntensity={1.2} roughness={0.1} />
-                </mesh>
-              ))}
-              {/* </> symbol */}
-              <mesh position={[0.16, 0.02, 0.005]}>
-                <boxGeometry args={[0.1, 0.06, 0.001]} />
-                <meshStandardMaterial color="#00aaff" emissive="#00aaff" emissiveIntensity={2} roughness={0.1} />
-              </mesh>
-              <pointLight position={[0, 0, 0.15]} intensity={0.5} color="#2244aa" distance={1.4} decay={2} />
-            </group>
-          }
-        />
+        <RoundedBox args={[0.84, 0.64, 0.5]} radius={0.04} smoothness={5} castShadow>
+          <meshStandardMaterial color="#d4d0c4" roughness={0.65} />
+        </RoundedBox>
+        {/* Screen bezel */}
+        <RoundedBox args={[0.84*0.82, 0.64*0.72, 0.018]} radius={0.025} smoothness={4} position={[0, 0.04, 0.255]}>
+          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
+        </RoundedBox>
+        {/* Screen */}
+        <mesh position={[0, 0.04, 0.266]}>
+          <boxGeometry args={[0.84*0.76, 0.64*0.66, 0.008]} />
+          <meshStandardMaterial color="#0d1117" roughness={0.05} />
+        </mesh>
+        {/* Screen content */}
+        <group position={[0, 0.08, 0.275]}>
+          <mesh position={[0, 0, 0.001]}><boxGeometry args={[0.62, 0.41, 0.001]} /><meshStandardMaterial color="#0d1a3a" roughness={0.05} /></mesh>
+          <mesh position={[0, 0.02, 0.003]}><boxGeometry args={[0.18, 0.32, 0.001]} /><meshStandardMaterial color="#1a3a88" emissive="#1a3a88" emissiveIntensity={0.5} roughness={0.1} /></mesh>
+          {[0.14, 0.08, 0.02, -0.04, -0.1].map((y, i) => (
+            <mesh key={i} position={[-0.1+(i%2)*0.06, y, 0.005]}>
+              <boxGeometry args={[0.2+(i%3)*0.05, 0.014, 0.001]} />
+              <meshStandardMaterial color="#4488ff" emissive="#4488ff" emissiveIntensity={1.2} roughness={0.1} />
+            </mesh>
+          ))}
+          <pointLight position={[0, 0, 0.15]} intensity={0.5} color="#2244aa" distance={1.4} decay={2} />
+        </group>
+        {/* Stand */}
+        <RoundedBox args={[0.84*0.55, 0.06, 0.5*0.55]} radius={0.02} smoothness={3} position={[0, -0.64/2-0.04, 0]}>
+          <meshStandardMaterial color="#c8c4b8" roughness={0.6} />
+        </RoundedBox>
+        {/* Power LED */}
+        <mesh position={[0.84*0.28, -0.64*0.38, 0.262]}>
+          <sphereGeometry args={[0.006, 6, 6]} />
+          <meshStandardMaterial color="#00ff44" emissive="#00ff44" emissiveIntensity={2} roughness={0.1} />
+        </mesh>
       </group>
- 
-      {/* ── Keyboard & Mouse ── */}
+
       <Keyboard position={[0.05, 0.737, 0.05]} />
       <MouseWithCable position={[0.6, 0.738, 0.05]} />
- 
-      {/* ── Arc desk lamp (like reference) ── */}
+
+      {/* ── Desk lamp ── */}
       <group position={[0.82, 0.73, -0.32]}>
-        {/* Base */}
-        <mesh castShadow>
-          <cylinderGeometry args={[0.07, 0.08, 0.035, 12]} />
-          <meshStandardMaterial color="#d0ccbe" roughness={0.5} />
-        </mesh>
-        {/* Vertical stem */}
-        <mesh position={[0, 0.28, 0]}>
-          <cylinderGeometry args={[0.014, 0.016, 0.52, 8]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.45} />
-        </mesh>
-        {/* Arc arm */}
-        <mesh position={[-0.04, 0.56, -0.06]} rotation={[0.5, 0, -0.1]}>
-          <cylinderGeometry args={[0.012, 0.014, 0.32, 8]} />
-          <meshStandardMaterial color="#c8c4b8" roughness={0.45} />
-        </mesh>
-        {/* Lamp head — round dome shade like reference */}
+        <mesh castShadow><cylinderGeometry args={[0.07, 0.08, 0.035, 12]} /><meshStandardMaterial color="#d0ccbe" roughness={0.5} /></mesh>
+        <mesh position={[0, 0.28, 0]}><cylinderGeometry args={[0.014, 0.016, 0.52, 8]} /><meshStandardMaterial color="#c8c4b8" roughness={0.45} /></mesh>
+        <mesh position={[-0.04, 0.56, -0.06]} rotation={[0.5, 0, -0.1]}><cylinderGeometry args={[0.012, 0.014, 0.32, 8]} /><meshStandardMaterial color="#c8c4b8" roughness={0.45} /></mesh>
         <mesh position={[-0.1, 0.72, -0.18]} rotation={[1.0, 0, 0.1]}>
           <sphereGeometry args={[0.1, 10, 8, 0, Math.PI*2, 0, Math.PI*0.55]} />
           <meshStandardMaterial color="#dedad2" roughness={0.4} side={THREE.DoubleSide} />
         </mesh>
-        {/* Inner glow bulb */}
-        <mesh position={[-0.09, 0.68, -0.18]}>
-          <sphereGeometry args={[0.028, 8, 8]} />
-          <meshStandardMaterial color="#ffe8c0" emissive="#ffe8c0" emissiveIntensity={2.5} roughness={0.1} />
-        </mesh>
+        <mesh position={[-0.09, 0.68, -0.18]}><sphereGeometry args={[0.028, 8, 8]} /><meshStandardMaterial color="#ffe8c0" emissive="#ffe8c0" emissiveIntensity={2.5} roughness={0.1} /></mesh>
         <pointLight position={[-0.09, 0.62, -0.2]} intensity={2.4} color="#ffe8c0" distance={2.8} decay={2} />
       </group>
- 
+
       {/* ── Coffee mug ── */}
       <group position={[0.54, 0.738, -0.24]}>
-        <mesh castShadow>
-          <cylinderGeometry args={[0.046, 0.040, 0.085, 14]} />
-          <meshStandardMaterial color="#d8d4ce" roughness={0.5} />
-        </mesh>
-        {/* Coffee inside */}
-        <mesh position={[0, 0.038, 0]}>
-          <cylinderGeometry args={[0.042, 0.042, 0.003, 14]} />
-          <meshStandardMaterial color="#3a1a08" roughness={0.3} />
-        </mesh>
-        {/* Handle */}
-        <mesh position={[0.058, 0.01, 0]} rotation={[0, 0, Math.PI/2]}>
-          <torusGeometry args={[0.024, 0.007, 6, 12, Math.PI]} />
-          <meshStandardMaterial color="#d0ccc6" roughness={0.5} />
-        </mesh>
+        <mesh castShadow><cylinderGeometry args={[0.046, 0.040, 0.085, 14]} /><meshStandardMaterial color="#d8d4ce" roughness={0.5} /></mesh>
+        <mesh position={[0, 0.038, 0]}><cylinderGeometry args={[0.042, 0.042, 0.003, 14]} /><meshStandardMaterial color="#3a1a08" roughness={0.3} /></mesh>
+        <mesh position={[0.058, 0.01, 0]} rotation={[0, 0, Math.PI/2]}><torusGeometry args={[0.024, 0.007, 6, 12, Math.PI]} /><meshStandardMaterial color="#d0ccc6" roughness={0.5} /></mesh>
       </group>
- 
-      {/* ── Books stack (right of lamp like reference) ── */}
+
+      {/* ── Books stack ── */}
       <group position={[0.3, 0.738, -0.36]}>
-        {[
-          { h: 0.028, w: 0.18, d: 0.14, col: '#c8c4b8', dy: 0 },
-          { h: 0.025, w: 0.17, d: 0.13, col: '#b8b4a8', dy: 0.028 },
-          { h: 0.022, w: 0.16, d: 0.12, col: '#c4c0b4', dy: 0.053 },
-        ].map((b, i) => (
-          <mesh key={i} position={[0, b.dy + b.h/2, 0]}>
-            <boxGeometry args={[b.w, b.h, b.d]} />
+        {[{h:0.028,w:0.18,d:0.14,col:'#c8c4b8',dy:0},{h:0.025,w:0.17,d:0.13,col:'#b8b4a8',dy:0.028},{h:0.022,w:0.16,d:0.12,col:'#c4c0b4',dy:0.053}].map((b,i) => (
+          <RoundedBox key={i} args={[b.w, b.h, b.d]} radius={0.006} smoothness={3} position={[0, b.dy+b.h/2, 0]}>
             <meshStandardMaterial color={b.col} roughness={0.7} />
-          </mesh>
+          </RoundedBox>
         ))}
       </group>
- 
-      {/* ── Notepad / sticky note ── */}
+
+      {/* ── Notepad ── */}
       <group position={[0.44, 0.738, -0.1]}>
-        <mesh>
-          <boxGeometry args={[0.14, 0.008, 0.12]} />
+        <RoundedBox args={[0.14, 0.008, 0.12]} radius={0.004} smoothness={3}>
           <meshStandardMaterial color="#f5f0e0" roughness={0.7} />
-        </mesh>
+        </RoundedBox>
         {[0.03, 0.01, -0.01, -0.03].map((dz, i) => (
-          <mesh key={i} position={[0, 0.006, dz]}>
-            <boxGeometry args={[0.1, 0.002, 0.007]} />
-            <meshStandardMaterial color="#cccccc" roughness={0.5} />
-          </mesh>
+          <mesh key={i} position={[0, 0.006, dz]}><boxGeometry args={[0.1, 0.002, 0.007]} /><meshStandardMaterial color="#cccccc" roughness={0.5} /></mesh>
         ))}
-        {/* Pen */}
-        <mesh position={[0.08, 0.012, 0]} rotation={[0, 0.3, 0]}>
-          <cylinderGeometry args={[0.005, 0.005, 0.14, 6]} />
-          <meshStandardMaterial color="#888880" roughness={0.4} />
-        </mesh>
+        <mesh position={[0.08, 0.012, 0]} rotation={[0, 0.3, 0]}><cylinderGeometry args={[0.005, 0.005, 0.14, 6]} /><meshStandardMaterial color="#888880" roughness={0.4} /></mesh>
       </group>
- 
-      {/* ── Small plant pot on right corner ── */}
+
+      {/* ── Small desk plant ── */}
       <group position={[0.76, 0.742, 0.12]}>
-        <mesh castShadow>
-          <cylinderGeometry args={[0.044, 0.052, 0.07, 10]} />
-          <meshStandardMaterial color="#c07040" roughness={0.8} />
-        </mesh>
+        <mesh castShadow><cylinderGeometry args={[0.044, 0.052, 0.07, 10]} /><meshStandardMaterial color="#c07040" roughness={0.8} /></mesh>
         {[0,1,2].map(i => (
           <mesh key={i} position={[Math.sin(i*2.09)*0.04, 0.09+i*0.015, Math.cos(i*2.09)*0.04]}>
-            <sphereGeometry args={[0.05, 6, 5]} />
-            <meshStandardMaterial color="#d4d0c8" roughness={1.0} flatShading />
+            <sphereGeometry args={[0.05, 6, 5]} /><meshStandardMaterial color="#d4d0c8" roughness={1.0} flatShading />
           </mesh>
         ))}
       </group>
- 
+
     </group>
   )
 }
+
 
 // ── LOW-POLY FLAT LEAF (hexagonal disc shape) ─────────────────────────────
 function FlatLeaf({ position, rotation, scaleX = 1, scaleZ = 1 }) {
@@ -1208,8 +1104,12 @@ function Rocks() {
 function Steps() {
   return (
     <group position={[0.1, 0.25, 0.42]}>
-      <mesh position={[0, 0, -0.08]}><boxGeometry args={[1.6, 0.06, 0.52]} /><meshStandardMaterial color={C.accent} roughness={0.8} /></mesh>
-      <mesh position={[0, -0.06, 0.22]}><boxGeometry args={[1.6, 0.06, 0.52]} /><meshStandardMaterial color={C.wallDk} roughness={0.8} /></mesh>
+      <RoundedBox args={[1.6, 0.06, 0.52]} radius={0.02} smoothness={3} position={[0, 0, -0.08]}>
+        <meshStandardMaterial color={C.accent} roughness={0.8} />
+      </RoundedBox>
+      <RoundedBox args={[1.6, 0.06, 0.52]} radius={0.02} smoothness={3} position={[0, -0.06, 0.22]}>
+        <meshStandardMaterial color={C.wallDk} roughness={0.8} />
+      </RoundedBox>
     </group>
   )
 }
