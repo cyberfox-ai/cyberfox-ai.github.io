@@ -42,100 +42,25 @@ export function useCameraFly() {
 function Island() {
   return (
     <group>
-      {/* ── TOP SURFACE — wide flat disc with soft edge ── */}
       <mesh position={[0, 0.18, 0]} receiveShadow>
-        <cylinderGeometry args={[3.6, 3.6, 0.12, 72]} />
-        <meshStandardMaterial color={C.islandTop} roughness={0.75} />
+        <cylinderGeometry args={[3.6, 3.6, 0.2, 56]} />
+        <meshStandardMaterial color={C.islandTop} roughness={0.8} />
       </mesh>
-
-      {/* ── TOP EDGE CURVE — torus ring around top rim ── */}
-      <mesh position={[0, 0.10, 0]}>
-        <torusGeometry args={[3.6, 0.14, 18, 72]} />
-        <meshStandardMaterial color={C.islandTop} roughness={0.75} />
+      <mesh position={[0, -0.28, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[3.6, 3.2, 0.9, 48]} />
+        <meshStandardMaterial color={C.island} roughness={0.9} />
       </mesh>
-
-      {/* ── UPPER BODY — starts wide, smooth taper ── */}
-      <mesh position={[0, -0.18, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[3.58, 3.45, 0.55, 72]} />
-        <meshStandardMaterial color={C.island} roughness={0.85} />
-      </mesh>
-
-      {/* ── MID BELLY BULGE — widest point, rounds outward ── */}
-      <mesh position={[0, -0.55, 0]}>
-        <cylinderGeometry args={[3.5, 3.55, 0.45, 72]} />
-        <meshStandardMaterial color={C.island} roughness={0.88} />
-      </mesh>
-
-      {/* ── TORUS BELT — smooth bulge at widest point ── */}
-      <mesh position={[0, -0.62, 0]}>
-        <torusGeometry args={[3.5, 0.18, 18, 72]} />
-        <meshStandardMaterial color={C.island} roughness={0.88} />
-      </mesh>
-
-      {/* ── UNDER TUCK — curves inward sharply ── */}
       <mesh position={[0, -0.95, 0]}>
-        <cylinderGeometry args={[3.1, 2.9, 0.55, 64]} />
+        <cylinderGeometry args={[3.2, 2.6, 0.7, 40]} />
         <meshStandardMaterial color={C.islandBot} roughness={0.9} />
       </mesh>
-
-      {/* ── UNDER TORUS — smooth curve where it tucks under ── */}
-      <mesh position={[0, -1.05, 0]}>
-        <torusGeometry args={[2.95, 0.22, 16, 64]} />
+      <mesh position={[0, -1.5, 0]}>
+        <cylinderGeometry args={[2.6, 1.5, 0.75, 32]} />
         <meshStandardMaterial color={C.islandBot} roughness={0.9} />
       </mesh>
-
-      {/* ── LOWER TIER — first underbelly layer ── */}
-      <mesh position={[0, -1.42, 0]}>
-        <cylinderGeometry args={[2.75, 2.45, 0.65, 56]} />
-        <meshStandardMaterial color={C.islandBot} roughness={0.92} />
-      </mesh>
-
-      {/* ── LOWER TIER TORUS ── */}
-      <mesh position={[0, -1.52, 0]}>
-        <torusGeometry args={[2.5, 0.18, 14, 56]} />
-        <meshStandardMaterial color="#b8b5cc" roughness={0.92} />
-      </mesh>
-
-      {/* ── SECOND UNDERBELLY TIER ── */}
-      <mesh position={[0, -1.88, 0]}>
-        <cylinderGeometry args={[2.2, 1.75, 0.65, 48]} />
-        <meshStandardMaterial color="#b0accc" roughness={0.93} />
-      </mesh>
-
-      {/* ── SECOND TIER TORUS ── */}
-      <mesh position={[0, -1.96, 0]}>
-        <torusGeometry args={[1.8, 0.15, 12, 48]} />
-        <meshStandardMaterial color="#a8a4c8" roughness={0.93} />
-      </mesh>
-
-      {/* ── THIRD TIER — narrows more ── */}
-      <mesh position={[0, -2.28, 0]}>
-        <cylinderGeometry args={[1.6, 1.15, 0.55, 40]} />
-        <meshStandardMaterial color="#a8a4c0" roughness={0.94} />
-      </mesh>
-
-      {/* ── THIRD TIER TORUS ── */}
-      <mesh position={[0, -2.35, 0]}>
-        <torusGeometry args={[1.18, 0.12, 10, 40]} />
-        <meshStandardMaterial color="#a0a0bc" roughness={0.94} />
-      </mesh>
-
-      {/* ── STEM — tapers to narrow point ── */}
-      <mesh position={[0, -2.65, 0]}>
-        <cylinderGeometry args={[0.95, 0.55, 0.55, 32]} />
-        <meshStandardMaterial color="#9898b8" roughness={0.95} />
-      </mesh>
-
-      {/* ── TIP ── */}
-      <mesh position={[0, -3.0, 0]}>
-        <cylinderGeometry args={[0.55, 0.18, 0.55, 24]} />
-        <meshStandardMaterial color="#9090b0" roughness={0.95} />
-      </mesh>
-
-      {/* ── BOTTOM CAP ── */}
-      <mesh position={[0, -3.28, 0]}>
-        <sphereGeometry args={[0.2, 16, 12]} />
-        <meshStandardMaterial color="#8888a8" roughness={0.95} />
+      <mesh position={[0, -2.05, 0]}>
+        <cylinderGeometry args={[1.5, 0.4, 0.7, 24]} />
+        <meshStandardMaterial color="#a8a4c0" roughness={0.9} />
       </mesh>
     </group>
   )
