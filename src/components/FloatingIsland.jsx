@@ -2,6 +2,7 @@ import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import gsap from 'gsap'
+import { useGLTF } from '@react-three/drei'
 
 // ── Palette: warm clay + dark wood like reference image ───────────────────
 const C = {
@@ -797,115 +798,38 @@ function Campfire({ position = [0.0, 0.28, 0.95] }) {
   )
 }
 
-// ── Mailbox — dome capsule shape on disc base like reference ──────────────
+
+import { useGLTF } from '@react-three/drei'
+
+// ── Mailbox — loaded from GLB model ───────────────────────────────────────
 function Mailbox({ onSelect }) {
+  const { scene } = useGLTF('/models/mailbox.glb')
+
+  // Make all meshes cast/receive shadow and match scene color tone
+  useMemo(() => {
+    scene.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+  }, [scene])
+
   return (
-    <group
+    <primitive
+      object={scene}
       position={[-2.2, 0.28, 0.5]}
       rotation={[0, 0.3, 0]}
+      scale={[0.8, 0.8, 0.8]}
       onClick={(e) => { e.stopPropagation(); onSelect('contact') }}
-    >
-      {/* ── Base disc ── */}
-      <mesh position={[0, 0, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.22, 0.24, 0.055, 18]} />
-        <meshStandardMaterial color={C.accent} roughness={0.75} />
-      </mesh>
-
-      {/* ── Short neck stem ── */}
-      <mesh position={[0, 0.10, 0]} castShadow>
-        <cylinderGeometry args={[0.075, 0.085, 0.14, 12]} />
-        <meshStandardMaterial color={C.accent} roughness={0.75} />
-      </mesh>
-
-      {/* ── Main body — tall capsule/oval ── */}
-      <group position={[0, 0.46, 0]}>
-
-        {/* Body cylinder center */}
-        <mesh castShadow>
-          <cylinderGeometry args={[0.195, 0.195, 0.38, 16]} />
-          <meshStandardMaterial color={C.accent} roughness={0.72} />
-        </mesh>
-
-        {/* Dome top — half sphere */}
-        <mesh position={[0, 0.19, 0]} castShadow>
-          <sphereGeometry args={[0.195, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshStandardMaterial color={C.accent} roughness={0.72} />
-        </mesh>
-
-        {/* Bottom rounded cap */}
-        <mesh position={[0, -0.19, 0]} rotation={[Math.PI, 0, 0]} castShadow>
-          <sphereGeometry args={[0.195, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshStandardMaterial color={C.accent} roughness={0.72} />
-        </mesh>
-
-        {/* ── Front opening — carved inset ── */}
-        {/* Dark cavity */}
-        <mesh position={[0, 0.04, 0.175]}>
-          <boxGeometry args={[0.26, 0.32, 0.05]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.85} />
-        </mesh>
-
-        {/* Opening arch top */}
-        <mesh position={[0, 0.20, 0.175]} rotation={[Math.PI/2, 0, 0]}>
-          <cylinderGeometry args={[0.13, 0.13, 0.05, 12, 1, false, 0, Math.PI]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.85} />
-        </mesh>
-
-        {/* ── Envelope / letter inside ── */}
-        <mesh position={[0, 0.06, 0.165]} rotation={[-0.35, 0, 0]} castShadow>
-          <boxGeometry args={[0.18, 0.13, 0.018]} />
-          <meshStandardMaterial color="#f0ede0" roughness={0.6} />
-        </mesh>
-        {/* Envelope diagonal fold left */}
-        <mesh position={[-0.045, 0.09, 0.175]} rotation={[-0.35, 0, 0.52]}>
-          <boxGeometry args={[0.12, 0.004, 0.012]} />
-          <meshStandardMaterial color="#d8d5c8" roughness={0.5} />
-        </mesh>
-        {/* Envelope diagonal fold right */}
-        <mesh position={[0.045, 0.09, 0.175]} rotation={[-0.35, 0, -0.52]}>
-          <boxGeometry args={[0.12, 0.004, 0.012]} />
-          <meshStandardMaterial color="#d8d5c8" roughness={0.5} />
-        </mesh>
-
-        {/* ── Side latch button (right side) ── */}
-        <mesh position={[0.20, 0.04, 0.02]} castShadow>
-          <sphereGeometry args={[0.028, 10, 8]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.60} />
-        </mesh>
-
-        {/* ── Hinge detail strip on back ── */}
-        <mesh position={[0, 0.19, -0.12]}>
-          <boxGeometry args={[0.08, 0.06, 0.04]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.70} />
-        </mesh>
-
-        {/* ── Thin rim around opening ── */}
-        <mesh position={[0, 0.04, 0.192]}>
-          <boxGeometry args={[0.28, 0.34, 0.012]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.68} transparent opacity={0.0} />
-        </mesh>
-        {/* Rim top arc */}
-        <mesh position={[0, 0.21, 0.190]} rotation={[Math.PI/2, 0, 0]}>
-          <torusGeometry args={[0.13, 0.010, 8, 16, Math.PI]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.65} />
-        </mesh>
-        {/* Rim left edge */}
-        <mesh position={[-0.13, 0.08, 0.190]}>
-          <boxGeometry args={[0.010, 0.30, 0.010]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.65} />
-        </mesh>
-        {/* Rim right edge */}
-        <mesh position={[0.13, 0.08, 0.190]}>
-          <boxGeometry args={[0.010, 0.30, 0.010]} />
-          <meshStandardMaterial color={C.wallDk} roughness={0.65} />
-        </mesh>
-
-      </group>
-
-      <pointLight position={[0, 1.0, 0.4]} intensity={0.40} color="#aaddff" distance={1.4} decay={2} />
-    </group>
+    />
   )
 }
+
+// Preload for performance
+useGLTF.preload('/models/mailbox.glb')
+
+
 
 // ── Social Media Badge Icons on floor ─────────────────────────────────────
 // Square badge tiles with raised 3D logo shapes — fully visible on floor
