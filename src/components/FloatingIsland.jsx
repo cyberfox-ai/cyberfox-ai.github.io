@@ -484,9 +484,9 @@ function KeyTile({ position, url, children }) {
 function SocialKeys() {
   const gh = 'https://github.com/sudovivek'
   const tw = 'https://x.com/sudovivek'
-  const li = 'https://linkedin.com/in/sudovivek'
+  const li = 'https://in.linkedin.com/in/sudovivek'
   const ig = 'https://instagram.com/sudovivek'
-  const md = 'https://medium.com/sudovivek'
+  const md = 'https://medium.com/@sudovivek'
 
   return (
     <group position={[0.15, 0.31, 0.62]}>
