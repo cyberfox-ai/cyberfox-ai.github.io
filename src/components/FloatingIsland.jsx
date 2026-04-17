@@ -797,62 +797,99 @@ function Campfire({ position = [0.0, 0.28, 0.95] }) {
   )
 }
 
-// ── Improved Mailbox ───────────────────────────────────────────────────────
+// ── Mailbox — cylindrical barrel on pole like reference ───────────────────
 function Mailbox({ onSelect }) {
   return (
-    <group position={[-2.2, 0.28, 0.5]} rotation={[0, 0.3, 0]} onClick={(e) => { e.stopPropagation(); onSelect('contact') }}>
-      {/* Post with base */}
-      <mesh position={[0, -0.26, 0]}>
-        <boxGeometry args={[0.22, 0.06, 0.22]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.7} />
+    <group
+      position={[-2.2, 0.28, 0.5]}
+      rotation={[0, 0.3, 0]}
+      onClick={(e) => { e.stopPropagation(); onSelect('contact') }}
+    >
+      {/* ── Pole base disc ── */}
+      <mesh position={[0, 0, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.18, 0.20, 0.045, 16]} />
+        <meshStandardMaterial color={C.accent} roughness={0.75} />
       </mesh>
-      <mesh castShadow>
-        <boxGeometry args={[0.068, 0.56, 0.068]} />
-        <meshStandardMaterial color={C.wall} roughness={0.65} />
+
+      {/* ── Pole stem ── */}
+      <mesh position={[0, 0.38, 0]} castShadow>
+        <cylinderGeometry args={[0.035, 0.040, 0.72, 10]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.70} />
       </mesh>
-      {/* Box body */}
-      <mesh position={[0, 0.44, 0]} castShadow>
-        <boxGeometry args={[0.3, 0.22, 0.42]} />
-        <meshStandardMaterial color="#d0d0e8" roughness={0.5} />
-      </mesh>
-      {/* Rounded roof */}
-      <mesh position={[0, 0.565, 0]} rotation={[0, Math.PI/2, 0]}>
-        <cylinderGeometry args={[0.155, 0.155, 0.42, 14, 1, false, 0, Math.PI]} />
-        <meshStandardMaterial color="#b8b8d0" roughness={0.5} />
-      </mesh>
-      {/* Back plate */}
-      <mesh position={[0, 0.44, -0.22]}>
-        <boxGeometry args={[0.3, 0.22, 0.02]} />
-        <meshStandardMaterial color="#b8b8d0" roughness={0.5} />
-      </mesh>
-      {/* Mail slot */}
-      <mesh position={[0, 0.44, 0.22]}>
-        <boxGeometry args={[0.16, 0.035, 0.025]} />
-        <meshStandardMaterial color={C.keyDk} roughness={0.4} />
-      </mesh>
-      {/* Door hinge dots */}
-      {[-0.09, 0.09].map((y, i) => (
-        <mesh key={i} position={[-0.14, 0.44+y, 0.22]}>
-          <sphereGeometry args={[0.012, 6, 6]} />
-          <meshStandardMaterial color={C.socDk} metalness={0.5} roughness={0.3} />
+
+      {/* ── Main barrel body — tilted upward at angle ── */}
+      <group position={[0, 0.78, 0]} rotation={[0, 0, 0.18]}>
+
+        {/* Barrel cylinder — horizontal */}
+        <mesh rotation={[Math.PI/2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.155, 0.155, 0.44, 16]} />
+          <meshStandardMaterial color={C.accent} roughness={0.72} />
         </mesh>
-      ))}
-      {/* Flag pole */}
-      <mesh position={[0.16, 0.52, 0.1]}>
-        <boxGeometry args={[0.012, 0.2, 0.012]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+
+        {/* Back cap — flat circle */}
+        <mesh position={[0, 0, -0.22]} castShadow>
+          <circleGeometry args={[0.155, 16]} />
+          <meshStandardMaterial color={C.wallDk} roughness={0.72} />
+        </mesh>
+
+        {/* Front opening ring */}
+        <mesh position={[0, 0, 0.22]}>
+          <torusGeometry args={[0.155, 0.012, 8, 20]} />
+          <meshStandardMaterial color={C.wallDk} roughness={0.65} />
+        </mesh>
+
+        {/* ── Envelope/letter sticking out ── */}
+        <group position={[0, 0.06, 0.20]}>
+          {/* Letter body */}
+          <mesh castShadow>
+            <boxGeometry args={[0.14, 0.10, 0.025]} />
+            <meshStandardMaterial color="#f0ede0" roughness={0.6} />
+          </mesh>
+          {/* Envelope flap triangle */}
+          <mesh position={[0, 0.038, 0.014]} rotation={[0.4, 0, 0]}>
+            <boxGeometry args={[0.14, 0.06, 0.004]} />
+            <meshStandardMaterial color="#e0ddd0" roughness={0.6} />
+          </mesh>
+          {/* Diagonal fold lines */}
+          <mesh position={[-0.035, -0.01, 0.014]} rotation={[0, 0, 0.55]}>
+            <boxGeometry args={[0.10, 0.004, 0.003]} />
+            <meshStandardMaterial color="#c8c5b8" roughness={0.5} />
+          </mesh>
+          <mesh position={[0.035, -0.01, 0.014]} rotation={[0, 0, -0.55]}>
+            <boxGeometry args={[0.10, 0.004, 0.003]} />
+            <meshStandardMaterial color="#c8c5b8" roughness={0.5} />
+          </mesh>
+        </group>
+
+        {/* ── Flag on right side ── */}
+        <group position={[0.165, 0.10, -0.05]}>
+          {/* Flag pole */}
+          <mesh castShadow>
+            <cylinderGeometry args={[0.008, 0.008, 0.22, 6]} />
+            <meshStandardMaterial color={C.wallDk} roughness={0.65} />
+          </mesh>
+          {/* Flag */}
+          <mesh position={[0.055, 0.08, 0]}>
+            <boxGeometry args={[0.10, 0.065, 0.008]} />
+            <meshStandardMaterial color={C.accent} roughness={0.55} />
+          </mesh>
+        </group>
+
+        {/* ── Hinge detail strip on top ── */}
+        <mesh position={[0, 0.155, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.162, 0.162, 0.08, 16, 1, false, 0, Math.PI]} />
+          <meshStandardMaterial color={C.wallDk} roughness={0.68} />
+        </mesh>
+
+      </group>
+
+      {/* ── Arm connecting pole to barrel ── */}
+      <mesh position={[0, 0.68, 0]} rotation={[0, 0, 0.18]} castShadow>
+        <cylinderGeometry args={[0.022, 0.028, 0.18, 8]} />
+        <meshStandardMaterial color={C.wallDk} roughness={0.70} />
       </mesh>
-      {/* Flag */}
-      <mesh position={[0.22, 0.65, 0.1]}>
-        <boxGeometry args={[0.14, 0.09, 0.006]} />
-        <meshStandardMaterial color="#cc3333" emissive="#cc3333" emissiveIntensity={0.4} roughness={0.5} />
-      </mesh>
-      {/* Address numbers */}
-      <mesh position={[0, 0.44, 0.225]}>
-        <boxGeometry args={[0.08, 0.024, 0.002]} />
-        <meshStandardMaterial color={C.keyDk} roughness={0.3} />
-      </mesh>
-      <pointLight position={[0, 0.6, 0.4]} intensity={0.55} color="#aaddff" distance={1.6} decay={2} />
+
+      <pointLight position={[0, 1.0, 0.4]} intensity={0.45} color="#aaddff" distance={1.4} decay={2} />
     </group>
   )
 }
