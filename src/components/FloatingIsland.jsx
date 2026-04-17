@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 import { useGLTF } from '@react-three/drei'
 
+
 // ── Palette: warm clay + dark wood like reference image ───────────────────
 const C = {
   island:    '#d8d5e8',
@@ -799,7 +800,6 @@ function Campfire({ position = [0.0, 0.28, 0.95] }) {
 }
 
 
-import { useGLTF } from '@react-three/drei'
 
 // ── Mailbox — loaded from GLB model ───────────────────────────────────────
 function Mailbox({ onSelect }) {
