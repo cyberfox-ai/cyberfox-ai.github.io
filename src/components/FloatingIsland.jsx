@@ -858,150 +858,244 @@ function Mailbox({ onSelect }) {
 }
 
 
-// ── Social Media Badge Icons on floor ─────────────────────────────────────
-// Square badge tiles with raised 3D logo shapes — fully visible on floor
-function SocialBadge({ position, color, glowColor, symbol, url, onSelect }) {
-  const handleClick = (e) => {
-    e.stopPropagation()
-    if (url) window.open(url, '_blank')
-    else onSelect && onSelect('contact')
-  }
-
+// ── Rounded Square Badge base ─────────────────────────────────────────────
+function BadgeBase({ color }) {
   return (
-    <group position={position} onClick={handleClick}>
-      {/* Badge base - rounded square */}
-      <mesh castShadow receiveShadow position={[0, 0, 0]}>
-        <boxGeometry args={[0.3, 0.055, 0.3]} />
-        <meshStandardMaterial color={color} roughness={0.35} metalness={0.05} />
+    <group>
+      {/* Main body */}
+      <mesh castShadow receiveShadow>
+        <boxGeometry args={[0.30, 0.06, 0.30]} />
+        <meshStandardMaterial color={color} roughness={0.55} />
       </mesh>
-      {/* Top face slightly inset */}
-      <mesh position={[0, 0.03, 0]}>
-        <boxGeometry args={[0.26, 0.016, 0.26]} />
-        <meshStandardMaterial color={C.keyDk} roughness={0.25} />
-      </mesh>
-      {/* Corner radius indicators */}
-      {[[-0.12,0.12],[-0.12,-0.12],[0.12,0.12],[0.12,-0.12]].map(([x,z],i) => (
-        <mesh key={i} position={[x, 0.0, z]}>
-          <sphereGeometry args={[0.016, 5, 5]} />
-          <meshStandardMaterial color={color} roughness={0.35} />
+      {/* 4 corner spheres for rounding */}
+      {[[-0.13,-0.13],[0.13,-0.13],[-0.13,0.13],[0.13,0.13]].map(([x,z],i) => (
+        <mesh key={i} position={[x, 0, z]} castShadow>
+          <sphereGeometry args={[0.04, 8, 8]} />
+          <meshStandardMaterial color={color} roughness={0.55} />
         </mesh>
       ))}
-
-      {/* ── Icon geometry raised on top ── */}
-      {symbol === 'github' && (
-        <group position={[0, 0.048, 0]}>
-          {/* Octocat head circle */}
-          <mesh rotation={[Math.PI/2,0,0]}>
-            <torusGeometry args={[0.066, 0.016, 8, 20]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={0.9} roughness={0.1} />
-          </mesh>
-          {/* Octocat ears */}
-          <mesh position={[-0.038, 0.044, 0]} rotation={[Math.PI/2,0,0]}>
-            <coneGeometry args={[0.018, 0.035, 4]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={0.9} roughness={0.1} />
-          </mesh>
-          <mesh position={[0.038, 0.044, 0]} rotation={[Math.PI/2,0,0]}>
-            <coneGeometry args={[0.018, 0.035, 4]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={0.9} roughness={0.1} />
-          </mesh>
-          {/* Tentacle tail */}
-          <mesh position={[0, -0.072, 0]} rotation={[Math.PI/2,0,0]}>
-            <boxGeometry args={[0.016, 0.001, 0.045]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={0.9} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {symbol === 'x' && (
-        <group position={[0, 0.049, 0]}>
-          <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
-            <boxGeometry args={[0.16, 0.001, 0.026]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={1.4} roughness={0.1} />
-          </mesh>
-          <mesh rotation={[Math.PI/2, 0, -Math.PI/4]}>
-            <boxGeometry args={[0.16, 0.001, 0.026]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={1.4} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {symbol === 'linkedin' && (
-        <group position={[0, 0.049, 0]}>
-          {/* "in" - left vertical bar */}
-          <mesh position={[-0.05, 0, 0]} rotation={[Math.PI/2,0,0]}>
-            <boxGeometry args={[0.022, 0.001, 0.1]} />
-            <meshStandardMaterial color="#0a66c2" emissive="#0a66c2" emissiveIntensity={2} roughness={0.1} />
-          </mesh>
-          {/* dot above left bar */}
-          <mesh position={[-0.05, 0.05, 0]} rotation={[Math.PI/2,0,0]}>
-            <cylinderGeometry args={[0.014, 0.014, 0.001, 8]} />
-            <meshStandardMaterial color="#0a66c2" emissive="#0a66c2" emissiveIntensity={2} roughness={0.1} />
-          </mesh>
-          {/* right vertical bar */}
-          <mesh position={[0.02, -0.01, 0]} rotation={[Math.PI/2,0,0]}>
-            <boxGeometry args={[0.022, 0.001, 0.1]} />
-            <meshStandardMaterial color="#0a66c2" emissive="#0a66c2" emissiveIntensity={2} roughness={0.1} />
-          </mesh>
-          {/* curve on right */}
-          <mesh position={[0.052, 0.016, 0]} rotation={[Math.PI/2,0,0]}>
-            <torusGeometry args={[0.03, 0.012, 6, 10, Math.PI]} />
-            <meshStandardMaterial color="#0a66c2" emissive="#0a66c2" emissiveIntensity={2} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {symbol === 'instagram' && (
-        <group position={[0, 0.049, 0]}>
-          {/* Outer rounded square */}
-          <mesh rotation={[Math.PI/2,0,0]}>
-            <torusGeometry args={[0.072, 0.016, 4, 4]} />
-            <meshStandardMaterial color="#e1306c" emissive="#e1306c" emissiveIntensity={1.5} roughness={0.1} />
-          </mesh>
-          {/* Inner circle */}
-          <mesh rotation={[Math.PI/2,0,0]}>
-            <torusGeometry args={[0.036, 0.013, 8, 16]} />
-            <meshStandardMaterial color="#e1306c" emissive="#e1306c" emissiveIntensity={1.5} roughness={0.1} />
-          </mesh>
-          {/* Corner dot */}
-          <mesh position={[0.05, 0.05, 0]}>
-            <sphereGeometry args={[0.014, 6, 6]} />
-            <meshStandardMaterial color="#e1306c" emissive="#e1306c" emissiveIntensity={2} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {symbol === 'medium' && (
-        <group position={[0, 0.049, 0]}>
-          <mesh position={[-0.055, 0, 0]} rotation={[Math.PI/2,0,0]}>
-            <cylinderGeometry args={[0.028, 0.028, 0.001, 16]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={1.2} roughness={0.1} />
-          </mesh>
-          <mesh position={[0.005, 0, 0]} rotation={[Math.PI/2,0,0]}>
-            <cylinderGeometry args={[0.02, 0.02, 0.001, 16]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={1.2} roughness={0.1} />
-          </mesh>
-          <mesh position={[0.054, 0, 0]} rotation={[Math.PI/2,0,0]}>
-            <cylinderGeometry args={[0.013, 0.013, 0.001, 16]} />
-            <meshStandardMaterial color={C.accent} emissive={C.accent} emissiveIntensity={1.2} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {/* Glow pool under badge */}
-      <pointLight position={[0, -0.06, 0]} intensity={0.4} color={glowColor} distance={0.65} decay={2} />
+      {/* Top face inset — darker panel */}
+      <mesh position={[0, 0.032, 0]}>
+        <boxGeometry args={[0.24, 0.008, 0.24]} />
+        <meshStandardMaterial color="#2a2035" roughness={0.4} />
+      </mesh>
+      {/* Top face corner fills */}
+      {[[-0.10,-0.10],[0.10,-0.10],[-0.10,0.10],[0.10,0.10]].map(([x,z],i) => (
+        <mesh key={i} position={[x, 0.032, z]}>
+          <sphereGeometry args={[0.022, 8, 8]} />
+          <meshStandardMaterial color="#2a2035" roughness={0.4} />
+        </mesh>
+      ))}
     </group>
   )
 }
 
+// ── GitHub Badge ──────────────────────────────────────────────────────────
+function GithubBadge({ position, onSelect }) {
+  const col = '#c4bdd4'
+  const iconCol = '#1a1025'
+  const y = 0.036
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); window.open('https://github.com', '_blank') }}>
+      <BadgeBase color={col} />
+      {/* ── Octocat silhouette ── */}
+      <group position={[0, y, 0]}>
+        {/* Head — main circle */}
+        <mesh rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.062, 0.062, 0.006, 20]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Left ear */}
+        <mesh position={[-0.038, 0, -0.048]} rotation={[Math.PI/2, 0, 0]}>
+          <coneGeometry args={[0.022, 0.038, 3]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Right ear */}
+        <mesh position={[0.038, 0, -0.048]} rotation={[Math.PI/2, 0, 0]}>
+          <coneGeometry args={[0.022, 0.038, 3]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Body */}
+        <mesh position={[0, 0, 0.055]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.048, 0.038, 0.06, 14]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Left arm */}
+        <mesh position={[-0.062, 0, 0.052]} rotation={[Math.PI/2, 0, 0.4]}>
+          <cylinderGeometry args={[0.016, 0.012, 0.07, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Right arm */}
+        <mesh position={[0.062, 0, 0.052]} rotation={[Math.PI/2, 0, -0.4]}>
+          <cylinderGeometry args={[0.016, 0.012, 0.07, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Tail — center bottom */}
+        <mesh position={[0, 0, 0.098]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.018, 0.010, 0.055, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Tail curl */}
+        <mesh position={[0, 0, 0.118]} rotation={[Math.PI/2, 0, 0]}>
+          <torusGeometry args={[0.018, 0.010, 6, 12, Math.PI * 1.2]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Left leg */}
+        <mesh position={[-0.028, 0, 0.095]} rotation={[Math.PI/2, 0, 0.1]}>
+          <cylinderGeometry args={[0.014, 0.012, 0.045, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Right leg */}
+        <mesh position={[0.028, 0, 0.095]} rotation={[Math.PI/2, 0, -0.1]}>
+          <cylinderGeometry args={[0.014, 0.012, 0.045, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 0.15, 0]} intensity={0.3} color="#ffffff" distance={0.6} decay={2} />
+    </group>
+  )
+}
+
+// ── YouTube Badge ─────────────────────────────────────────────────────────
+function YoutubeBadge({ position, onSelect }) {
+  const col = '#c4bdd4'
+  const iconCol = '#1a1025'
+  const y = 0.036
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); window.open('https://youtube.com', '_blank') }}>
+      <BadgeBase color={col} />
+      {/* ── YouTube play button ── */}
+      <group position={[0, y, 0]}>
+        {/* Rounded rect background */}
+        <mesh rotation={[Math.PI/2, 0, 0]}>
+          <boxGeometry args={[0.13, 0.006, 0.095]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Corner rounds on rect */}
+        {[[-0.055,-0.035],[0.055,-0.035],[-0.055,0.035],[0.055,0.035]].map(([x,z],i) => (
+          <mesh key={i} position={[x, 0, z]} rotation={[Math.PI/2, 0, 0]}>
+            <cylinderGeometry args={[0.016, 0.016, 0.006, 10]} />
+            <meshStandardMaterial color={iconCol} roughness={0.3} />
+          </mesh>
+        ))}
+        {/* Play triangle */}
+        <mesh position={[0.008, 0.001, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+          <coneGeometry args={[0.030, 0.048, 3]} />
+          <meshStandardMaterial color={col} roughness={0.3} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 0.15, 0]} intensity={0.3} color="#ffffff" distance={0.6} decay={2} />
+    </group>
+  )
+}
+
+// ── Instagram Badge ───────────────────────────────────────────────────────
+function InstagramBadge({ position }) {
+  const col = '#c4bdd4'
+  const iconCol = '#1a1025'
+  const y = 0.036
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); window.open('https://instagram.com', '_blank') }}>
+      <BadgeBase color={col} />
+      <group position={[0, y, 0]}>
+        {/* Outer rounded square ring */}
+        <mesh rotation={[Math.PI/2, 0, 0]}>
+          <torusGeometry args={[0.060, 0.012, 6, 4]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Inner circle */}
+        <mesh rotation={[Math.PI/2, 0, 0]}>
+          <torusGeometry args={[0.030, 0.010, 8, 16]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Corner dot */}
+        <mesh position={[0.046, 0, -0.046]}>
+          <sphereGeometry args={[0.012, 8, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 0.15, 0]} intensity={0.3} color="#ffffff" distance={0.6} decay={2} />
+    </group>
+  )
+}
+
+// ── X (Twitter) Badge ─────────────────────────────────────────────────────
+function XBadge({ position }) {
+  const col = '#c4bdd4'
+  const iconCol = '#1a1025'
+  const y = 0.037
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); window.open('https://x.com', '_blank') }}>
+      <BadgeBase color={col} />
+      <group position={[0, y, 0]}>
+        <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
+          <boxGeometry args={[0.13, 0.006, 0.022]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        <mesh rotation={[Math.PI/2, 0, -Math.PI/4]}>
+          <boxGeometry args={[0.13, 0.006, 0.022]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 0.15, 0]} intensity={0.3} color="#ffffff" distance={0.6} decay={2} />
+    </group>
+  )
+}
+
+// ── LinkedIn Badge ────────────────────────────────────────────────────────
+function LinkedInBadge({ position }) {
+  const col = '#c4bdd4'
+  const iconCol = '#1a1025'
+  const y = 0.037
+
+  return (
+    <group position={position} onClick={(e) => { e.stopPropagation(); window.open('https://linkedin.com', '_blank') }}>
+      <BadgeBase color={col} />
+      <group position={[0, y, 0]}>
+        {/* Left vertical bar */}
+        <mesh position={[-0.042, 0, 0.008]} rotation={[Math.PI/2, 0, 0]}>
+          <boxGeometry args={[0.018, 0.006, 0.082]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Dot above left bar */}
+        <mesh position={[-0.042, 0, -0.050]}>
+          <sphereGeometry args={[0.012, 8, 8]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Right vertical bar */}
+        <mesh position={[0.022, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
+          <boxGeometry args={[0.018, 0.006, 0.075]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Arch/curve for n shape */}
+        <mesh position={[0.050, 0, -0.015]} rotation={[Math.PI/2, 0, 0]}>
+          <torusGeometry args={[0.026, 0.010, 6, 10, Math.PI]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+        {/* Right of arch vertical */}
+        <mesh position={[0.076, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
+          <boxGeometry args={[0.018, 0.006, 0.075]} />
+          <meshStandardMaterial color={iconCol} roughness={0.3} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 0.15, 0]} intensity={0.3} color="#ffffff" distance={0.6} decay={2} />
+    </group>
+  )
+}
+
+// ── All Social Badges placed on island ───────────────────────────────────
 function SocialBadges({ onSelect }) {
   return (
     <group position={[0, 0.31, 0]}>
-      {/* Spread badges clearly on the empty floor area in front of house */}
-      <SocialBadge position={[-0.7, 0, 0.55]}  color="#2d2d3d" glowColor="#ffffff" symbol="github"    url="https://github.com"    onSelect={onSelect} />
-      <SocialBadge position={[0.0,  0, 0.88]}  color="#1a1a2a" glowColor="#cccccc" symbol="x"         url="https://x.com"         onSelect={onSelect} />
-      <SocialBadge position={[0.72, 0, 0.58]}  color="#0a1a3a" glowColor="#0a66c2" symbol="linkedin"  url="https://linkedin.com"  onSelect={onSelect} />
-      <SocialBadge position={[-0.7, 0, 1.08]}  color="#2a1020" glowColor="#e1306c" symbol="instagram" url="https://instagram.com" onSelect={onSelect} />
-      <SocialBadge position={[0.72, 0, 1.08]}  color="#1a1a1a" glowColor="#ffffff" symbol="medium"    url="https://medium.com"    onSelect={onSelect} />
+      <GithubBadge    position={[-0.7,  0, 0.55]} onSelect={onSelect} />
+      <YoutubeBadge   position={[0.0,   0, 0.55]} onSelect={onSelect} />
+      <InstagramBadge position={[-0.7,  0, 1.08]} />
+      <XBadge         position={[0.0,   0, 1.08]} />
+      <LinkedInBadge  position={[0.70,  0, 0.80]} />
     </group>
   )
 }
