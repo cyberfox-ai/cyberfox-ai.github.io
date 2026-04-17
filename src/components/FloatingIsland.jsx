@@ -890,71 +890,85 @@ function BadgeBase({ color }) {
   )
 }
 
-// ── GitHub Badge ──────────────────────────────────────────────────────────
 function GithubBadge({ position }) {
-  const baseColor = '#d8d4e8'   // soft tile color (match your UI)
-  const iconColor = '#2b1a12'   // dark brown icon like reference
+  const base = '#dcd8ea'
+  const icon = '#2b1a12'
 
   return (
     <group
       position={position}
+      rotation={[0, Math.PI / 4, 0]} // slight angle like reference
       onClick={(e) => {
         e.stopPropagation()
         window.open('https://github.com', '_blank')
       }}
     >
-      {/* ── Rounded Tile Base ── */}
-      <group>
-        {/* Main tile */}
-        <mesh castShadow receiveShadow>
-          <boxGeometry args={[0.32, 0.06, 0.32]} />
-          <meshStandardMaterial color={baseColor} roughness={0.6} />
+      {/* ── TILE (standing vertical) ── */}
+      <group rotation={[Math.PI / 2, 0, 0]}>
+        
+        {/* Base */}
+        <mesh castShadow>
+          <boxGeometry args={[0.34, 0.06, 0.34]} />
+          <meshStandardMaterial color={base} roughness={0.6} />
         </mesh>
 
         {/* Rounded corners */}
-        {[[-0.14,-0.14],[0.14,-0.14],[-0.14,0.14],[0.14,0.14]].map(([x,z],i) => (
+        {[[-0.15,-0.15],[0.15,-0.15],[-0.15,0.15],[0.15,0.15]].map(([x,z],i)=>(
           <mesh key={i} position={[x, 0, z]}>
-            <sphereGeometry args={[0.05, 10, 10]} />
-            <meshStandardMaterial color={baseColor} />
+            <sphereGeometry args={[0.055, 10, 10]} />
+            <meshStandardMaterial color={base} />
           </mesh>
         ))}
+
+        {/* Slight inner bevel */}
+        <mesh position={[0, 0.032, 0]}>
+          <boxGeometry args={[0.26, 0.01, 0.26]} />
+          <meshStandardMaterial color="#cfcbe0" />
+        </mesh>
+
+        {/* ── REAL OCTOCAT STYLE (clean silhouette) ── */}
+        <group position={[0, 0.04, 0]}>
+
+          {/* HEAD */}
+          <mesh rotation={[Math.PI/2, 0, 0]}>
+            <cylinderGeometry args={[0.075, 0.075, 0.012, 32]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+          {/* EARS */}
+          <mesh position={[-0.05, 0, -0.06]} rotation={[Math.PI/2, 0, 0]}>
+            <coneGeometry args={[0.028, 0.05, 3]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+          <mesh position={[0.05, 0, -0.06]} rotation={[Math.PI/2, 0, 0]}>
+            <coneGeometry args={[0.028, 0.05, 3]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+          {/* BODY */}
+          <mesh position={[0, 0, 0.075]} rotation={[Math.PI/2, 0, 0]}>
+            <cylinderGeometry args={[0.055, 0.05, 0.014, 24]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+          {/* TAIL (CURVED — key realism) */}
+          <mesh position={[0, 0, 0.115]} rotation={[Math.PI/2, 0, 0]}>
+            <torusGeometry args={[0.035, 0.01, 10, 30, Math.PI * 1.3]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+          {/* SMALL BODY TAPER */}
+          <mesh position={[0, 0, 0.095]} rotation={[Math.PI/2, 0, 0]}>
+            <coneGeometry args={[0.025, 0.03, 8]} />
+            <meshStandardMaterial color={icon} />
+          </mesh>
+
+        </group>
       </group>
 
-      {/* ── Flat Octocat Silhouette (2D style) ── */}
-      <group position={[0, 0.035, 0]}>
-        
-        {/* Head */}
-        <mesh rotation={[Math.PI/2, 0, 0]}>
-          <cylinderGeometry args={[0.07, 0.07, 0.008, 20]} />
-          <meshStandardMaterial color={iconColor} />
-        </mesh>
-
-        {/* Ears */}
-        <mesh position={[-0.045, 0, -0.055]} rotation={[Math.PI/2, 0, 0]}>
-          <coneGeometry args={[0.025, 0.04, 3]} />
-          <meshStandardMaterial color={iconColor} />
-        </mesh>
-
-        <mesh position={[0.045, 0, -0.055]} rotation={[Math.PI/2, 0, 0]}>
-          <coneGeometry args={[0.025, 0.04, 3]} />
-          <meshStandardMaterial color={iconColor} />
-        </mesh>
-
-        {/* Body */}
-        <mesh position={[0, 0, 0.07]} rotation={[Math.PI/2, 0, 0]}>
-          <cylinderGeometry args={[0.05, 0.045, 0.01, 16]} />
-          <meshStandardMaterial color={iconColor} />
-        </mesh>
-
-        {/* Tail */}
-        <mesh position={[0, 0, 0.11]} rotation={[Math.PI/2, 0, 0]}>
-          <torusGeometry args={[0.03, 0.008, 6, 16, Math.PI]} />
-          <meshStandardMaterial color={iconColor} />
-        </mesh>
-      </group>
-
-      {/* Subtle highlight light */}
-      <pointLight position={[0, 0.15, 0]} intensity={0.25} distance={0.5} />
+      {/* Lighting for realism */}
+      <pointLight position={[0.1, 0.2, 0.2]} intensity={0.4} />
     </group>
   )
 }
