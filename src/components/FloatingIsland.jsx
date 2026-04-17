@@ -687,111 +687,176 @@ function DeskSetup({ onSelect }) {
   )
 }
 
-// ── Baobab-style Tree matching reference image ────────────────────────────
-function Tree({ position = [2.0, 0.28, -1.3] }) {
-  // Large individual leaf blobs — wide, flat ellipsoids like the reference
-  const leafBlobs = useMemo(() => [
-    // Top crown center
-    { x:  0.00, y: 2.55, z:  0.00, sx: 1.05, sy: 0.72, sz: 0.95 },
-    { x:  0.20, y: 2.70, z: -0.15, sx: 0.85, sy: 0.60, sz: 0.80 },
-    { x: -0.18, y: 2.68, z:  0.18, sx: 0.88, sy: 0.58, sz: 0.82 },
-
-    // Right side spread
-    { x:  0.82, y: 2.15, z: -0.10, sx: 1.10, sy: 0.65, sz: 0.90 },
-    { x:  1.05, y: 1.90, z:  0.20, sx: 0.95, sy: 0.58, sz: 0.85 },
-    { x:  1.20, y: 2.00, z: -0.35, sx: 0.90, sy: 0.55, sz: 0.78 },
-    { x:  0.95, y: 2.30, z:  0.40, sx: 0.80, sy: 0.50, sz: 0.72 },
-    { x:  1.28, y: 1.70, z:  0.05, sx: 0.85, sy: 0.48, sz: 0.70 },
-
-    // Left side spread
-    { x: -0.80, y: 2.10, z:  0.05, sx: 1.08, sy: 0.62, sz: 0.92 },
-    { x: -1.02, y: 1.88, z: -0.25, sx: 0.92, sy: 0.56, sz: 0.84 },
-    { x: -1.18, y: 2.05, z:  0.30, sx: 0.88, sy: 0.52, sz: 0.78 },
-    { x: -0.90, y: 2.32, z: -0.42, sx: 0.82, sy: 0.50, sz: 0.74 },
-    { x: -1.25, y: 1.72, z:  0.10, sx: 0.80, sy: 0.48, sz: 0.70 },
-
-    // Front spread
-    { x:  0.30, y: 2.00, z:  0.88, sx: 1.00, sy: 0.60, sz: 0.88 },
-    { x: -0.30, y: 1.95, z:  0.92, sx: 0.95, sy: 0.58, sz: 0.82 },
-    { x:  0.60, y: 1.80, z:  0.80, sx: 0.85, sy: 0.52, sz: 0.76 },
-    { x: -0.55, y: 1.82, z:  0.82, sx: 0.82, sy: 0.50, sz: 0.74 },
-    { x:  0.05, y: 1.78, z:  1.10, sx: 0.78, sy: 0.48, sz: 0.70 },
-
-    // Back spread
-    { x:  0.25, y: 2.05, z: -0.90, sx: 1.00, sy: 0.60, sz: 0.85 },
-    { x: -0.28, y: 2.00, z: -0.88, sx: 0.95, sy: 0.58, sz: 0.82 },
-    { x:  0.55, y: 1.82, z: -0.78, sx: 0.85, sy: 0.52, sz: 0.75 },
-    { x: -0.52, y: 1.85, z: -0.80, sx: 0.82, sy: 0.50, sz: 0.72 },
-
-    // Mid-level fill — makes canopy feel dense
-    { x:  0.45, y: 2.38, z:  0.42, sx: 0.90, sy: 0.55, sz: 0.80 },
-    { x: -0.42, y: 2.40, z: -0.40, sx: 0.88, sy: 0.54, sz: 0.78 },
-    { x:  0.60, y: 2.20, z: -0.50, sx: 0.85, sy: 0.52, sz: 0.76 },
-    { x: -0.58, y: 2.22, z:  0.48, sx: 0.82, sy: 0.50, sz: 0.74 },
-    { x:  0.10, y: 2.42, z:  0.60, sx: 0.80, sy: 0.50, sz: 0.72 },
-    { x: -0.12, y: 2.44, z: -0.58, sx: 0.80, sy: 0.50, sz: 0.70 },
-  ], [])
-
+// ── Helper: one flat pan-shaped leaf ─────────────────────────────────────
+function PanLeaf({ position, rotation, scale = 1 }) {
+  // Flat teardrop/spade leaf: squashed sphere, wide & flat
   return (
-    <group position={position}>
+    <mesh position={position} rotation={rotation} castShadow receiveShadow>
+      <sphereGeometry args={[0.18 * scale, 7, 5]} />
+      <meshStandardMaterial color={C.island} roughness={1.0} flatShading />
+    </mesh>
+  )
+}
 
-      {/* ── Root flares at base ── */}
-      {[0, 1, 2, 3, 4, 5].map(i => {
-        const angle = (i / 6) * Math.PI * 2
+// ── Helper: cylindrical branch segment ────────────────────────────────────
+function Branch({ start, end, rTop = 0.04, rBot = 0.07 }) {
+  const s = new THREE.Vector3(...start)
+  const e = new THREE.Vector3(...end)
+  const dir = e.clone().sub(s)
+  const len = dir.length()
+  const mid = s.clone().add(dir.clone().multiplyScalar(0.5))
+  const quat = new THREE.Quaternion().setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    dir.clone().normalize()
+  )
+  const euler = new THREE.Euler().setFromQuaternion(quat)
+  return (
+    <mesh position={[mid.x, mid.y, mid.z]} rotation={[euler.x, euler.y, euler.z]} castShadow>
+      <cylinderGeometry args={[rTop, rBot, len, 7]} />
+      <meshStandardMaterial color={C.wood} roughness={0.9} />
+    </mesh>
+  )
+}
+
+// ── Leaf cluster: fan of pan-shaped leaves at a twig tip ──────────────────
+function LeafCluster({ position, baseRotY = 0, count = 5, spread = 0.55, scale = 1 }) {
+  return (
+    <group position={position} rotation={[0, baseRotY, 0]}>
+      {Array.from({ length: count }).map((_, i) => {
+        const angle = ((i / count) * Math.PI * 2) + (Math.random() * 0.3)
+        const tilt  = 0.25 + (i % 3) * 0.18
+        const dist  = spread * (0.75 + (i % 2) * 0.35)
         return (
           <mesh
             key={i}
-            position={[Math.cos(angle) * 0.28, -0.18, Math.sin(angle) * 0.28]}
-            rotation={[0, -angle, 0.45]}
+            position={[
+              Math.cos(angle) * dist,
+              (i % 3 === 1 ? 0.12 : -0.05),
+              Math.sin(angle) * dist,
+            ]}
+            rotation={[
+              -tilt + (i % 2 === 0 ? 0.1 : -0.1),
+              angle + 0.4,
+              (i % 2 === 0 ? 0.15 : -0.12),
+            ]}
+            scale={[
+              scale * (1.55 + (i % 3) * 0.18),   // wide X
+              scale * (0.28 + (i % 2) * 0.06),   // very flat Y
+              scale * (1.0  + (i % 3) * 0.12),   // medium Z
+            ]}
             castShadow
           >
-            <boxGeometry args={[0.10, 0.32, 0.22]} />
-            <meshStandardMaterial color={C.wood} roughness={0.92} />
+            <sphereGeometry args={[0.18, 7, 5]} />
+            <meshStandardMaterial color={C.island} roughness={1.0} flatShading />
+          </mesh>
+        )
+      })}
+    </group>
+  )
+}
+
+// ── Main Tree ─────────────────────────────────────────────────────────────
+function Tree({ position = [2.0, 0.28, -1.3] }) {
+  return (
+    <group position={position}>
+
+      {/* ── Ground root flares (6 fins) ── */}
+      {[0,1,2,3,4,5].map(i => {
+        const a = (i / 6) * Math.PI * 2
+        return (
+          <mesh key={i}
+            position={[Math.cos(a)*0.30, -0.10, Math.sin(a)*0.30]}
+            rotation={[0, -a, 0.50]}
+            castShadow
+          >
+            <boxGeometry args={[0.09, 0.28, 0.20]} />
+            <meshStandardMaterial color={C.wood} roughness={0.9} />
           </mesh>
         )
       })}
 
-      {/* ── Main trunk — thick baobab style ── */}
-      {/* Lower trunk — very wide */}
-      <mesh position={[0, 0.45, 0]} castShadow>
-        <cylinderGeometry args={[0.28, 0.38, 0.90, 10]} />
-        <meshStandardMaterial color={C.wood} roughness={0.92} />
+      {/* ── Trunk: 3-segment baobab with mid-bulge ── */}
+      {/* Base — very wide */}
+      <mesh position={[0, 0.38, 0]} castShadow>
+        <cylinderGeometry args={[0.26, 0.38, 0.76, 10]} />
+        <meshStandardMaterial color={C.wood} roughness={0.9} />
       </mesh>
-      {/* Mid trunk — starts tapering */}
-      <mesh position={[0, 1.10, 0]} castShadow>
-        <cylinderGeometry args={[0.20, 0.28, 0.55, 9]} />
-        <meshStandardMaterial color={C.wood} roughness={0.92} />
+      {/* Mid — slight bulge outward (wider than top of base) */}
+      <mesh position={[0, 0.95, 0]} castShadow>
+        <cylinderGeometry args={[0.30, 0.26, 0.42, 10]} />
+        <meshStandardMaterial color={C.wood} roughness={0.9} />
       </mesh>
-      {/* Upper trunk — narrows to canopy */}
-      <mesh position={[0, 1.58, 0]} castShadow>
-        <cylinderGeometry args={[0.13, 0.20, 0.48, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.92} />
+      {/* Upper mid */}
+      <mesh position={[0, 1.30, 0]} castShadow>
+        <cylinderGeometry args={[0.22, 0.30, 0.38, 9]} />
+        <meshStandardMaterial color={C.wood} roughness={0.9} />
       </mesh>
-      {/* Crown connector — small sphere where trunk meets leaves */}
-      <mesh position={[0, 1.88, 0]} castShadow>
-        <sphereGeometry args={[0.18, 8, 6]} />
-        <meshStandardMaterial color={C.wood} roughness={0.92} />
+      {/* Neck — narrows before fork */}
+      <mesh position={[0, 1.60, 0]} castShadow>
+        <cylinderGeometry args={[0.14, 0.22, 0.36, 8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.9} />
+      </mesh>
+      {/* Fork ball */}
+      <mesh position={[0, 1.82, 0]} castShadow>
+        <sphereGeometry args={[0.17, 8, 6]} />
+        <meshStandardMaterial color={C.wood} roughness={0.9} />
       </mesh>
 
-      {/* ── Large leaf blobs ── */}
-      {leafBlobs.map((l, i) => (
-        <mesh
-          key={i}
-          position={[l.x, l.y, l.z]}
-          scale={[l.sx, l.sy, l.sz]}
-          castShadow
-        >
-          <sphereGeometry args={[0.38, 8, 6]} />
-          <meshStandardMaterial
-            color={i % 4 === 0 ? C.islandTop : i % 4 === 1 ? C.island : i % 4 === 2 ? C.islandBot : C.island}
-            roughness={1.0}
-            flatShading
-          />
-        </mesh>
-      ))}
+      {/* ── 2 main thick branches splitting left & right ── */}
+      {/* Left branch — sweeps up-left */}
+      <Branch start={[-0.05, 1.82, 0.02]} end={[-0.55, 2.40, -0.10]} rBot={0.13} rTop={0.09} />
+      <Branch start={[-0.55, 2.40, -0.10]} end={[-0.90, 2.85, 0.15]} rBot={0.09} rTop={0.06} />
+      {/* Right branch — sweeps up-right */}
+      <Branch start={[0.05, 1.82, -0.02]} end={[0.52, 2.38,  0.10]} rBot={0.13} rTop={0.09} />
+      <Branch start={[0.52, 2.38,  0.10]} end={[0.88, 2.82, -0.12]} rBot={0.09} rTop={0.06} />
+
+      {/* ── Sub-branches from left arm ── */}
+      <Branch start={[-0.55, 2.40, -0.10]} end={[-1.10, 2.62,  0.40]} rBot={0.06} rTop={0.04} />
+      <Branch start={[-0.55, 2.40, -0.10]} end={[-0.60, 2.72, -0.55]} rBot={0.06} rTop={0.04} />
+      <Branch start={[-0.90, 2.85,  0.15]} end={[-1.35, 3.05, -0.10]} rBot={0.05} rTop={0.03} />
+      <Branch start={[-0.90, 2.85,  0.15]} end={[-0.70, 3.18,  0.50]} rBot={0.05} rTop={0.03} />
+
+      {/* ── Sub-branches from right arm ── */}
+      <Branch start={[0.52, 2.38,  0.10]} end={[1.08, 2.60, -0.38]} rBot={0.06} rTop={0.04} />
+      <Branch start={[0.52, 2.38,  0.10]} end={[0.58, 2.70,  0.52]} rBot={0.06} rTop={0.04} />
+      <Branch start={[0.88, 2.82, -0.12]} end={[1.32, 3.02,  0.12]} rBot={0.05} rTop={0.03} />
+      <Branch start={[0.88, 2.82, -0.12]} end={[0.68, 3.16, -0.48]} rBot={0.05} rTop={0.03} />
+
+      {/* ── Center top branch ── */}
+      <Branch start={[0, 1.82, 0]} end={[0.08, 2.65, 0.05]} rBot={0.10} rTop={0.06} />
+      <Branch start={[0.08, 2.65, 0.05]} end={[-0.18, 3.10, 0.30]} rBot={0.05} rTop={0.03} />
+      <Branch start={[0.08, 2.65, 0.05]} end={[ 0.22, 3.12,-0.28]} rBot={0.05} rTop={0.03} />
+
+      {/* ══ LEAF CLUSTERS at every twig tip ══ */}
+      {/* Left arm tips */}
+      <LeafCluster position={[-1.10, 2.68,  0.40]} baseRotY={0.3}  count={6} spread={0.50} scale={0.95} />
+      <LeafCluster position={[-0.60, 2.78, -0.55]} baseRotY={1.1}  count={5} spread={0.45} scale={0.90} />
+      <LeafCluster position={[-1.35, 3.10, -0.10]} baseRotY={2.0}  count={6} spread={0.52} scale={1.00} />
+      <LeafCluster position={[-0.70, 3.24,  0.50]} baseRotY={0.8}  count={5} spread={0.48} scale={0.88} />
+      <LeafCluster position={[-0.90, 2.90,  0.15]} baseRotY={1.5}  count={4} spread={0.42} scale={0.85} />
+
+      {/* Right arm tips */}
+      <LeafCluster position={[ 1.08, 2.66, -0.38]} baseRotY={-0.3} count={6} spread={0.50} scale={0.95} />
+      <LeafCluster position={[ 0.58, 2.76,  0.52]} baseRotY={-1.1} count={5} spread={0.45} scale={0.90} />
+      <LeafCluster position={[ 1.32, 3.08,  0.12]} baseRotY={-2.0} count={6} spread={0.52} scale={1.00} />
+      <LeafCluster position={[ 0.68, 3.22, -0.48]} baseRotY={-0.8} count={5} spread={0.48} scale={0.88} />
+      <LeafCluster position={[ 0.88, 2.88, -0.12]} baseRotY={-1.5} count={4} spread={0.42} scale={0.85} />
+
+      {/* Center top tips */}
+      <LeafCluster position={[-0.18, 3.16,  0.30]} baseRotY={0.5}  count={5} spread={0.46} scale={0.90} />
+      <LeafCluster position={[ 0.22, 3.18, -0.28]} baseRotY={-0.5} count={5} spread={0.46} scale={0.90} />
+      <LeafCluster position={[ 0.08, 2.70,  0.05]} baseRotY={1.0}  count={4} spread={0.40} scale={0.85} />
+
+      {/* Extra fill clusters for density */}
+      <LeafCluster position={[-0.52, 2.48, -0.08]} baseRotY={0.6}  count={4} spread={0.38} scale={0.80} />
+      <LeafCluster position={[ 0.50, 2.46,  0.08]} baseRotY={-0.6} count={4} spread={0.38} scale={0.80} />
+      <LeafCluster position={[-0.20, 2.80,  0.55]} baseRotY={1.8}  count={4} spread={0.40} scale={0.82} />
+      <LeafCluster position={[ 0.18, 2.82, -0.52]} baseRotY={-1.8} count={4} spread={0.40} scale={0.82} />
     </group>
   )
 }
+
+
 // ── Lantern ────────────────────────────────────────────────────────────────
 function Lantern({ position = [-1.7, 0.28, -0.5] }) {
   return (
