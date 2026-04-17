@@ -24,6 +24,6 @@
     "@types/three": "^0.165.0",
     "@vitejs/plugin-react": "^4.3.0",
     "gh-pages": "^6.1.1",
-    "vite": "^5.3.1"
+    "vite": "^8.0.8"
   }
 }
