@@ -1234,7 +1234,7 @@ function FloatingIslandScene({ onSelect }) {
       <Tree position={[2.0, 0.28, -1.3]} />
       {/* <Tree position={[-1.5, 0.28, -1.9]} /> */}
       <Lantern position={[-1.7, 0.28, -0.5]} />
-      <Campfire position={[0.85, 0.28, 1.45]} />
+      <Campfire position={[1.50, 0.28, 1.80]} />
       <Mailbox onSelect={onSelect} />
       <WelcomeSign onSelect={onSelect} />
       <ProjectCanvas onSelect={onSelect} />
